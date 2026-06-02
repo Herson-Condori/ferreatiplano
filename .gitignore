@@ -1,0 +1,38 @@
+# Dependencias
+node_modules/
+*/node_modules/
+
+# Variables de entorno (MUY IMPORTANTE - NO SUBIR CREDENCIALES)
+.env
+.env.local
+.env.production
+backend/.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build de producción
+dist/
+build/
+
+# Prisma
+backend/prisma/*.db
+backend/prisma/*.db-journal
+backend/prisma/migrations/
+
+# Cloudinary uploads (si usas local)
+backend/uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# Cache
+.cache/
+.parcel-cache/
