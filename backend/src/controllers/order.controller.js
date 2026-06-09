@@ -17,10 +17,16 @@ export const createOrder = async (req, res) => {
       lng, 
       costoDelivery, 
       notas,
-      metodoPago,      // 'CULQI' | 'YAPE' | 'CONTRA_ENTREGA'
+      metodoPago,      // 'CULQI' | 'YAPE' | 'CONTRA_ENTREGA' | 'EFECTIVO'
       culqiToken,      // Solo si metodoPago === 'CULQI'
       yapeReference    // Solo si metodoPago === 'YAPE' (número de operación)
     } = req.body;
+
+    // Map EFECTIVO to CONTRA_ENTREGA internally for database storage
+    let finalMetodoPago = metodoPago;
+    if (metodoPago === 'EFECTIVO') {
+      finalMetodoPago = 'CONTRA_ENTREGA';
+    }
 
     let clienteId = req.user?.id;
     let vendedorId = null;
@@ -33,7 +39,7 @@ export const createOrder = async (req, res) => {
     }
     
     // Validación: Cliente debe estar logueado (excepto contra entrega)
-    if (!clienteId && metodoPago !== 'CONTRA_ENTREGA') {
+    if (!clienteId && finalMetodoPago !== 'CONTRA_ENTREGA') {
       return res.status(401).json({ error: 'Debes iniciar sesión para pagar' });
     }
 
@@ -85,7 +91,7 @@ export const createOrder = async (req, res) => {
         vendedorId: vendedorId,
         estado: 'NUEVO',
         total,
-        metodoPago,
+        metodoPago: finalMetodoPago,
         direccionEntrega,
         lat: lat ? parseFloat(lat) : null,
         lng: lng ? parseFloat(lng) : null,
@@ -108,7 +114,8 @@ export const createOrder = async (req, res) => {
     let pagoExitoso = false;
 
     // 🟡 CULQI (Tarjeta)
-    if (metodoPago === 'CULQI' && culqiToken) {
+    // 🟡 CULQI (Tarjeta)
+    if (finalMetodoPago === 'CULQI' && culqiToken) {
       if (!culqi) {
         await prisma.pedido.delete({ where: { id: pedido.id } });
         return res.status(503).json({ 
@@ -147,7 +154,7 @@ export const createOrder = async (req, res) => {
       }
     } 
     // 🟣 YAPE (Pago manual)
-    else if (metodoPago === 'YAPE') {
+    else if (finalMetodoPago === 'YAPE') {
       await prisma.pago.create({
         data: {
           pedidoId: pedido.id,
@@ -158,14 +165,14 @@ export const createOrder = async (req, res) => {
       });
       pagoExitoso = !!yapeReference;
     }
-    // 🟤 CONTRA ENTREGA (Pago al recibir)
-    else if (metodoPago === 'CONTRA_ENTREGA') {
+    // 🟤 CONTRA ENTREGA / EFECTIVO (Pago al recibir o en tienda)
+    else if (finalMetodoPago === 'CONTRA_ENTREGA') {
       await prisma.pago.create({
         data: {
           pedidoId: pedido.id,
           monto: total,
           metodo: 'CONTRA_ENTREGA',
-          estado: 'PENDIENTE'
+          estado: vendedorId ? 'PAGADO' : 'PENDIENTE' // Para POS físico se considera pagado al instante
         }
       });
       pagoExitoso = true; // Se considera exitoso para continuar el flujo
@@ -174,7 +181,7 @@ export const createOrder = async (req, res) => {
     // ─────────────────────────────────────────────────────────
     // 4️⃣ Si el pago fue exitoso: actualizar stock y generar comprobante
     // ─────────────────────────────────────────────────────────
-    if (pagoExitoso || metodoPago === 'CONTRA_ENTREGA') {
+    if (pagoExitoso || finalMetodoPago === 'CONTRA_ENTREGA') {
       
       // ✅ Actualizar stock de productos
       for (const item of orderItems) {
@@ -184,8 +191,8 @@ export const createOrder = async (req, res) => {
         });
       }
 
-      // ✅ Actualizar estado del pedido
-      const nuevoEstado = pagoExitoso ? 'EN_PREPARACION' : 'NUEVO';
+      // ✅ Actualizar estado del pedido (Si es venta en tienda POS por vendedor, se marca como entregado)
+      const nuevoEstado = vendedorId ? 'ENTREGADO' : (pagoExitoso ? 'EN_PREPARACION' : 'NUEVO');
       await prisma.pedido.update({
         where: { id: pedido.id },
         data: { estado: nuevoEstado }
@@ -209,15 +216,15 @@ export const createOrder = async (req, res) => {
     // ─────────────────────────────────────────────────────────
     res.status(201).json({
       success: true,
-      message: metodoPago === 'CONTRA_ENTREGA' 
+      message: finalMetodoPago === 'CONTRA_ENTREGA' 
         ? 'Pedido creado. Paga al recibir.' 
         : 'Pago procesado exitosamente',
       data: {
         pedidoId: pedido.id,
         total,
-        estado: pagoExitoso ? 'EN_PREPARACION' : 'NUEVO',
-        metodoPago,
-        nextSteps: metodoPago === 'YAPE' && !yapeReference
+        estado: vendedorId ? 'ENTREGADO' : (pagoExitoso ? 'EN_PREPARACION' : 'NUEVO'),
+        metodoPago: finalMetodoPago,
+        nextSteps: finalMetodoPago === 'YAPE' && !yapeReference
           ? 'Envía tu comprobante de Yape al WhatsApp 942-318-219'
           : null
       }
