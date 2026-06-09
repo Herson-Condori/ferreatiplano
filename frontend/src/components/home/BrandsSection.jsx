@@ -2,14 +2,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
 const brands = [
-  { name: 'ABAC', color: 'text-blue-600' },
-  { name: 'Hammerite', color: 'text-red-600' },
-  { name: 'Xyladecor', color: 'text-yellow-500' },
-  { name: 'Famatel', color: 'text-orange-500' },
-  { name: 'Alpina', color: 'text-indigo-600' },
-  { name: 'Cevik', color: 'text-gray-600' },
-  { name: 'Femi', color: 'text-green-600' },
-  { name: 'Belflex', color: 'text-teal-600' },
+  { name: 'BOSCH', color: 'text-[#E21E26]', font: 'font-extrabold tracking-tight text-2xl' },
+  { name: 'MAKITA', color: 'text-[#008795]', font: 'font-black tracking-wide text-xl' },
+  { name: 'DEWALT', color: 'text-[#FEBD17]', font: 'font-black italic bg-black px-2 py-0.5 rounded-sm text-lg' },
+  { name: 'STANLEY', color: 'text-black', font: 'font-black bg-[#FEBD17] px-2 py-0.5 rounded-sm text-sm' },
+  { name: 'TRUPER', color: 'text-[#FF6600]', font: 'font-extrabold tracking-widest text-xl' },
 ];
 
 export default function BrandsSection() {
@@ -58,9 +55,9 @@ export default function BrandsSection() {
             {brands.map((brand, idx) => (
               <div
                 key={idx}
-                className="flex-shrink-0 w-32 h-20 bg-white rounded-lg flex items-center justify-center snap-center hover:scale-105 transition cursor-pointer border border-transparent hover:border-accent/30"
+                className="flex-shrink-0 w-36 h-20 bg-white rounded-lg flex items-center justify-center snap-center hover:scale-105 transition cursor-pointer border border-transparent hover:border-accent/30 shadow-sm"
               >
-                <span className={`font-bold text-lg ${brand.color}`}>
+                <span className={`${brand.font} ${brand.color}`}>
                   {brand.name}
                 </span>
               </div>
