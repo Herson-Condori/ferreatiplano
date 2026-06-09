@@ -2,6 +2,7 @@
 import { ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/useCartStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 // ✅ Imagen por defecto si el producto no tiene foto
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=500&q=80";
@@ -16,6 +17,11 @@ export default function ProductCard({ product }) {
   // ✅ Agregar al carrito con prevención de propagación
   const handleAddToCart = (e) => {
     e.stopPropagation(); // Evitar navegar al detalle al hacer clic en el botón
+    
+    if (!useAuthStore.getState().isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
     
     addToCart({
       id: product.id,

@@ -5,7 +5,7 @@ const faqs = [
   { q: '¿Quiénes somos?', a: 'Somos FERREALTIPLANO, tu ferretería de confianza en Juliaca. Nos especializamos en materiales de construcción de alta calidad, ofreciendo asesoría técnica y precios competitivos para profesionales y hogares.' },
   { q: '¿Cuál es nuestro principal objetivo?', a: 'Brindar una experiencia de compra integral, combinando productos de primera calidad con un servicio ágil, tecnología moderna y entregas seguras en toda la región de Puno.' },
   { q: '¿Qué nos diferencia de la competencia?', a: 'Contamos con stock permanente, sistema de cotización en línea, delivery rápido y un equipo de asesores especializados que te ayudan a calcular materiales exactos para tu obra.' },
-  { q: '¿Qué ventajas tiene comprar en Ferreatiplano?', a: 'Precios mayoristas, garantía en todos los productos, facturación electrónica SUNAT, múltiples métodos de pago y un programa de fidelización para clientes frecuentes.' },
+  { q: '¿Qué ventajas tiene comprar en Ferrealtiplano?', a: 'Precios mayoristas, garantía en todos los productos, facturación electrónica SUNAT, múltiples métodos de pago y un programa de fidelización para clientes frecuentes.' },
   { q: '¿Puedo realizar un pedido y que se facture con datos de empresa?', a: 'Sí, al finalizar tu compra podrás ingresar tu RUC y razón social. Emitimos boletas y facturas electrónicas válidas ante SUNAT de forma automática.' },
 ];
 

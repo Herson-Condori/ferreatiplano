@@ -82,7 +82,7 @@ export default function CheckoutConfirmation() {
                 <Smartphone size={24} className="text-purple-400" />
                 <div>
                   <p className="text-light-text font-medium">Yape</p>
-                  <p className="text-light-text/60 text-sm">Envía el comprobante al 999888777</p>
+                  <p className="text-light-text/60 text-sm">Envía el comprobante al 942318219</p>
                 </div>
               </>
             )}
@@ -103,7 +103,7 @@ export default function CheckoutConfirmation() {
         {/* Acciones */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <button 
-            onClick={() => window.open(`https://wa.me/51999888777?text=Hola,%20acabo%20de%20hacer%20un%20pedido%20#${id?.slice(-6).toUpperCase()}`, '_blank')}
+            onClick={() => window.open(`https://wa.me/51942318219?text=Hola,%20acabo%20de%20hacer%20un%20pedido%20#${id?.slice(-6).toUpperCase()}`, '_blank')}
             className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition"
           >
             <Share2 size={18} />

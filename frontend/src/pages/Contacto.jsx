@@ -72,7 +72,7 @@ export default function Contacto() {
                 </div>
                 <div>
                   <p className="font-medium text-light-text">Teléfono</p>
-                  <p className="text-light-text/60 text-sm">+51 999 888 777</p>
+                  <p className="text-light-text/60 text-sm">+51 942 318 219</p>
                 </div>
               </div>
 
@@ -82,7 +82,7 @@ export default function Contacto() {
                 </div>
                 <div>
                   <p className="font-medium text-light-text">Email</p>
-                  <p className="text-light-text/60 text-sm">ventas@ferreatiplano.pe</p>
+                  <p className="text-light-text/60 text-sm">ventas@ferrealtiplano.pe</p>
                 </div>
               </div>
 
@@ -103,7 +103,7 @@ export default function Contacto() {
 
           {/* WhatsApp */}
           <a 
-            href="https://wa.me/51999888777" 
+            href="https://wa.me/51942318219" 
             target="_blank" 
             rel="noopener noreferrer"
             className="bg-green-500/10 border border-green-500/30 rounded-xl p-6 flex items-center gap-4 hover:bg-green-500/20 transition"
@@ -166,7 +166,7 @@ export default function Contacto() {
                     value={formData.telefono}
                     onChange={handleChange}
                     className="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-3 text-light-text focus:outline-none focus:border-accent"
-                    placeholder="+51 999 888 777"
+                    placeholder="+51 942 318 219"
                   />
                 </div>
                 <div>

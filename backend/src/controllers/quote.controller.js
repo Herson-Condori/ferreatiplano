@@ -75,7 +75,7 @@ export const generateQuotePDF = async (req, res) => {
     doc.fontSize(18).font('Helvetica-Bold').text('CONSTRUMAX', { align: 'center' });
     doc.fontSize(10).font('Helvetica').text('Materiales de Construcción', { align: 'center' });
     doc.text('Av. Ilave 1234, Juliaca - Puno, Perú', { align: 'center' });
-    doc.text('📞 +51 999 888 777 | ✉️ ventas@construmax.pe', { align: 'center' });
+    doc.text('📞 +51 942 318 219 | ✉️ ventas@construmax.pe', { align: 'center' });
     
     doc.moveDown();
     doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();

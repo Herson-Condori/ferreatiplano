@@ -74,7 +74,7 @@ export const useAuthStore = create(
         // ✅ Limpiar localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        localStorage.removeItem('ferreatiplano-auth'); // Limpiar persistencia de Zustand
+        localStorage.removeItem('ferrealtiplano-auth'); // Limpiar persistencia de Zustand
         
         // ✅ Limpiar estado de Zustand
         set({ user: null, token: null, error: null });
@@ -99,7 +99,7 @@ export const useAuthStore = create(
       clearError: () => set({ error: null })
     }),
     {
-      name: 'ferreatiplano-auth',
+      name: 'ferrealtiplano-auth',
       partialize: (state) => ({ 
         user: state.user, 
         token: state.token 

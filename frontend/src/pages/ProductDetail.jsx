@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ShoppingCart, ArrowLeft, Package, Truck, Shield, Zap } from 'lucide-react'; // ✅ Agregado Zap
 import { useCartStore } from '../store/useCartStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -31,6 +32,10 @@ export default function ProductDetail() {
   }, [id]);
 
   const handleAddToCart = () => {
+    if (!useAuthStore.getState().isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
     if (product) {
       for (let i = 0; i < quantity; i++) {
         addToCart(product);
@@ -166,7 +171,13 @@ export default function ProductDetail() {
               
               {/* 1. Compra Rápida (Nuevo) */}
               <button
-                onClick={() => navigate(`/checkout/rapido/${product.id}?cantidad=${quantity}`)}
+                onClick={() => {
+                  if (!useAuthStore.getState().isAuthenticated()) {
+                    navigate('/login');
+                  } else {
+                    navigate(`/checkout/rapido/${product.id}?cantidad=${quantity}`);
+                  }
+                }}
                 disabled={product.stock === 0}
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg shadow-green-900/20"
               >

@@ -18,8 +18,8 @@ export default function SettingsPage() {
     nombre: 'FERREALTIPLANO',
     ruc: '20601234567',
     direccion: 'Av. Ilave 1234, Juliaca - Puno',
-    telefono: '+51 999 888 777',
-    email: 'ventas@ferreatiplano.pe',
+    telefono: '+51 942 318 219',
+    email: 'ventas@ferrealtiplano.pe',
     logo: '/logo.png'
   });
 
@@ -76,7 +76,7 @@ export default function SettingsPage() {
     } catch (err) {
       console.error('Error guardando config:', err);
       // Para demo: guardamos en localStorage
-      localStorage.setItem('ferreatiplano_config', JSON.stringify({
+      localStorage.setItem('ferrealtiplano_config', JSON.stringify({
         store: storeConfig, delivery: deliveryConfig, payments: paymentConfig, alerts: alertConfig
       }));
       setSuccessMsg('✅ Guardado localmente (modo demo)');

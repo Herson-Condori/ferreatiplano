@@ -54,7 +54,7 @@ export default function AdminLayout() {
           {sidebarOpen && (
             <Link to="/" className="flex items-center gap-2 group">
               <span className="font-display text-xl font-bold text-light-text group-hover:text-accent transition">
-                FERREA<span className="text-accent">TIPLANO</span>
+                FERREA<span className="text-accent">LTIPLANO</span>
               </span>
             </Link>
           )}
@@ -98,7 +98,7 @@ export default function AdminLayout() {
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-light-text truncate">{user?.nombre || 'Administrador'}</p>
-                <p className="text-xs text-light-text/50 truncate">{user?.email || 'admin@ferreatiplano.pe'}</p>
+                <p className="text-xs text-light-text/50 truncate">{user?.email || 'admin@ferrealtiplano.pe'}</p>
               </div>
             )}
             {sidebarOpen && (

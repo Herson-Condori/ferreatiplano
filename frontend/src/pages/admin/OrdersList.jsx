@@ -234,7 +234,7 @@ export default function OrdersList() {
                      Dirección de Entrega
                   </h3>
                   <p className="text-light-text text-sm">{selectedOrder.direccionEntrega}</p>
-                  <p className="text-light-text/50 text-xs">Delivery: S/ {selectedOrder.costoDelivery.toFixed(2)}</p>
+                  <p className="text-light-text/50 text-xs">Delivery: S/ {Number(selectedOrder.costoDelivery || 0).toFixed(2)}</p>
                 </div>
               </div>
 
@@ -252,7 +252,7 @@ export default function OrdersList() {
                         />
                         <div>
                           <p className="text-light-text text-sm">{item.producto.nombre}</p>
-                          <p className="text-light-text/50 text-xs">{item.cantidad} x S/ {item.precioUnitario.toFixed(2)}</p>
+                          <p className="text-light-text/50 text-xs">{item.cantidad} x S/ {Number(item.precioUnitario || 0).toFixed(2)}</p>
                         </div>
                       </div>
                       <span className="font-display font-bold text-accent text-sm">
@@ -266,10 +266,10 @@ export default function OrdersList() {
               {/* Totales */}
               <div className="flex justify-end">
                 <div className="w-64 space-y-2 text-right">
-                  <p className="text-light-text/70 text-sm">Subtotal: S/ {(selectedOrder.total - selectedOrder.costoDelivery).toFixed(2)}</p>
-                  <p className="text-light-text/70 text-sm">Delivery: S/ {selectedOrder.costoDelivery.toFixed(2)}</p>
+                  <p className="text-light-text/70 text-sm">Subtotal: S/ {(Number(selectedOrder.total || 0) - Number(selectedOrder.costoDelivery || 0)).toFixed(2)}</p>
+                  <p className="text-light-text/70 text-sm">Delivery: S/ {Number(selectedOrder.costoDelivery || 0).toFixed(2)}</p>
                   <p className="text-light-text font-bold text-xl border-t border-dark-border pt-2">
-                    Total: S/ {selectedOrder.total.toFixed(2)}
+                    Total: S/ {Number(selectedOrder.total || 0).toFixed(2)}
                   </p>
                 </div>
               </div>

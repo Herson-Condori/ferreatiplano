@@ -151,7 +151,7 @@ export default function RegisterForm() {
               value={formData.telefono}
               onChange={handleChange}
               className="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-3 text-light-text placeholder-light-text/40 focus:outline-none focus:border-accent transition"
-              placeholder="999 888 777"
+              placeholder="942 318 219"
             />
           </div>
 

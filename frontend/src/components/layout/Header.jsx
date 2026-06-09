@@ -4,14 +4,13 @@ import { ShoppingCart, User, Menu, X, Search, Bell, ChevronDown, Package, Dollar
 import { useState, useEffect } from 'react';
 import { useCartStore } from '../../store/useCartStore';
 import { useAuthStore } from '../../store/useAuthStore';
-import CartDrawer from './CartDrawer';
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { setCartOpen } = useCartStore();
   
   const itemCount = useCartStore((state) => state.getItemCount());
   const { user, logout, isAuthenticated } = useAuthStore();
@@ -59,12 +58,14 @@ export default function Header() {
     setNotificaciones(prev => prev.map(n => ({ ...n, leida: true })));
   };
 
+  // ✅ CERRAR MENÚ MÓVIL AL CAMBIAR DE RUTA
   useEffect(() => {
     const handleRouteChange = () => setMobileOpen(false);
     window.addEventListener('hashchange', handleRouteChange);
     return () => window.removeEventListener('hashchange', handleRouteChange);
   }, []);
 
+  // ✅ CERRAR MENÚS AL HACER CLIC FUERA
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -80,18 +81,31 @@ export default function Header() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
+  // ✅ BLOQUEAR SCROLL CUANDO EL MENÚ MÓVIL ESTÁ ABIERTO
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileOpen]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/catalogo?search=${encodeURIComponent(searchQuery)}`);
+      navigate(`/catalogo?busqueda=${encodeURIComponent(searchQuery)}`);
       setSearchQuery('');
+      setMobileOpen(false);
     }
   };
 
-  // ✅ CORREGIDO: Solo llamar logout(), NO navigate()
   const handleLogout = () => {
-    logout(); // Ya redirige automáticamente con window.location.href
+    logout();
     setUserMenuOpen(false);
+    setMobileOpen(false);
   };
 
   const getInitials = (name) => {
@@ -102,18 +116,20 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-40 bg-dark-bg/95 backdrop-blur-md border-b border-dark-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
             
+            {/* LOGO */}
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center group-hover:scale-105 transition">
-                <span className="text-dark-bg font-bold text-sm">F</span>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-accent rounded-lg flex items-center justify-center group-hover:scale-105 transition">
+                <span className="text-dark-bg font-bold text-xs sm:text-sm">F</span>
               </div>
-              <span className="font-display text-xl font-bold text-light-text tracking-wide group-hover:text-accent transition">
+              <span className="font-display text-lg sm:text-xl font-bold text-light-text tracking-wide group-hover:text-accent transition">
                 FERREA<span className="text-accent">TIPLANO</span>
               </span>
             </Link>
 
+            {/* NAVEGACIÓN DESKTOP */}
             <nav className="hidden lg:flex items-center gap-1">
               {[
                 { label: 'Catálogo', path: '/catalogo' },
@@ -130,8 +146,10 @@ export default function Header() {
               ))}
             </nav>
 
-            <div className="hidden md:flex items-center gap-3">
+            {/* ACCIONES DESKTOP */}
+            <div className="hidden md:flex items-center gap-2 lg:gap-3">
               
+              {/* Buscador Desktop */}
               <div className="relative search-box">
                 <form onSubmit={handleSearch} className="relative">
                   <input 
@@ -139,12 +157,13 @@ export default function Header() {
                     placeholder="Buscar materiales..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-dark-surface border border-dark-border rounded-full pl-10 pr-4 py-2 text-sm text-light-text focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent w-48 lg:w-64 transition" 
+                    className="bg-dark-surface border border-dark-border rounded-full pl-9 pr-4 py-2 text-sm text-light-text focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent w-40 lg:w-64 transition" 
                   />
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text/50" />
                 </form>
               </div>
 
+              {/* Notificaciones */}
               <div className="relative notif-menu">
                 <button 
                   onClick={() => setNotifOpen(!notifOpen)}
@@ -204,6 +223,7 @@ export default function Header() {
                 )}
               </div>
 
+              {/* Usuario / Login */}
               {isAuthenticated() && user ? (
                 <div className="relative user-menu">
                   <button 
@@ -258,15 +278,16 @@ export default function Header() {
               ) : (
                 <Link 
                   to="/login" 
-                  className="flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/30 text-accent rounded-full hover:bg-accent/20 transition text-sm font-medium"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-accent/10 border border-accent/30 text-accent rounded-full hover:bg-accent/20 transition text-sm font-medium"
                 >
                   <User size={18} />
                   <span className="hidden sm:inline">Ingresar</span>
                 </Link>
               )}
 
+              {/* Carrito */}
               <button 
-                onClick={() => setIsCartOpen(true)}
+                onClick={() => setCartOpen(true)}
                 className="relative p-2 text-light-text hover:text-accent transition rounded-lg hover:bg-dark-surface"
                 aria-label="Abrir carrito"
               >
@@ -279,9 +300,11 @@ export default function Header() {
               </button>
             </div>
 
-            <div className="flex md:hidden items-center gap-2">
+            {/* BOTONES MÓVIL */}
+            <div className="flex md:hidden items-center gap-1 sm:gap-2">
+              {/* Carrito Mobile */}
               <button 
-                onClick={() => setIsCartOpen(true)}
+                onClick={() => setCartOpen(true)}
                 className="relative p-2 text-light-text hover:text-accent transition"
                 aria-label="Ver carrito"
               >
@@ -293,6 +316,7 @@ export default function Header() {
                 )}
               </button>
               
+              {/* Menú Hamburguesa */}
               <button 
                 className="p-2 text-light-text hover:text-accent transition" 
                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -304,9 +328,11 @@ export default function Header() {
           </div>
         </div>
 
+        {/* MENÚ MÓVIL DESPLEGABLE */}
         {mobileOpen && (
-          <div className="md:hidden bg-dark-surface border-t border-dark-border px-4 py-4 space-y-4 animate-fadeIn">
+          <div className="md:hidden bg-dark-surface border-t border-dark-border px-4 py-4 space-y-4 animate-fadeIn max-h-[calc(100vh-4rem)] overflow-y-auto">
             
+            {/* Buscador Mobile */}
             <form onSubmit={handleSearch} className="relative">
               <input 
                 type="text" 
@@ -318,23 +344,26 @@ export default function Header() {
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text/50" />
             </form>
 
+            {/* Navegación Mobile */}
             <nav className="space-y-2">
               {[
-                { label: 'Catálogo', path: '/catalogo' },
-                { label: 'Cotizador', path: '/cotizador' },
-                { label: 'Contacto', path: '/contacto' },
+                { label: 'Catálogo', path: '/catalogo', icon: '📦' },
+                { label: 'Cotizador', path: '/cotizador', icon: '📋' },
+                { label: 'Contacto', path: '/contacto', icon: '📞' },
               ].map((item) => (
                 <Link 
                   key={item.path}
                   to={item.path} 
-                  className="block px-4 py-3 text-light-text hover:text-accent hover:bg-dark-bg rounded-lg transition font-medium"
+                  className="flex items-center gap-3 px-4 py-3 text-light-text hover:text-accent hover:bg-dark-bg rounded-lg transition font-medium"
                   onClick={() => setMobileOpen(false)}
                 >
-                  {item.label}
+                  <span className="text-xl">{item.icon}</span>
+                  <span>{item.label}</span>
                 </Link>
               ))}
             </nav>
 
+            {/* Acciones Mobile */}
             <div className="pt-4 border-t border-dark-border space-y-3">
               {isAuthenticated() && user ? (
                 <>
@@ -348,58 +377,74 @@ export default function Header() {
                     </div>
                   </div>
                   
+                  <Link 
+                    to="/perfil"
+                    className="flex items-center gap-3 px-4 py-3 text-light-text hover:text-accent hover:bg-dark-bg rounded-lg transition font-medium"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <span className="text-xl">👤</span>
+                    <span>Mi Perfil</span>
+                  </Link>
+                  
                   {user.rol === 'ADMIN' && (
                     <Link 
                       to="/admin" 
-                      className="block px-4 py-3 bg-accent/10 text-accent rounded-lg font-medium text-center hover:bg-accent/20 transition"
+                      className="flex items-center gap-3 px-4 py-3 bg-accent/10 text-accent rounded-lg font-medium hover:bg-accent/20 transition"
                       onClick={() => setMobileOpen(false)}
                     >
-                      ⚙️ Panel Admin
+                      <span className="text-xl">⚙️</span>
+                      <span>Panel Admin</span>
                     </Link>
                   )}
                   {user.rol === 'VENDEDOR' && (
                     <Link 
                       to="/vendedor" 
-                      className="block px-4 py-3 bg-accent/10 text-accent rounded-lg font-medium text-center hover:bg-accent/20 transition"
+                      className="flex items-center gap-3 px-4 py-3 bg-accent/10 text-accent rounded-lg font-medium hover:bg-accent/20 transition"
                       onClick={() => setMobileOpen(false)}
                     >
-                      💼 Panel Vendedor
+                      <span className="text-xl">💼</span>
+                      <span>Panel Vendedor</span>
                     </Link>
                   )}
                   
                   <button 
                     onClick={handleLogout}
-                    className="w-full px-4 py-3 text-red-400 border border-red-500/30 rounded-lg font-medium hover:bg-red-500/10 transition"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-400 border border-red-500/30 rounded-lg font-medium hover:bg-red-500/10 transition"
                   >
-                    🚪 Cerrar Sesión
+                    <span className="text-xl">🚪</span>
+                    <span>Cerrar Sesión</span>
                   </button>
                 </>
               ) : (
                 <Link 
                   to="/login" 
-                  className="block px-4 py-3 bg-accent text-dark-bg font-bold rounded-lg text-center hover:bg-accent-hover transition"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-accent text-dark-bg font-bold rounded-lg hover:bg-accent-hover transition"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Iniciar Sesión
+                  <User size={18} />
+                  <span>Iniciar Sesión</span>
                 </Link>
               )}
               
               <button 
                 onClick={() => {
                   setMobileOpen(false);
-                  setIsCartOpen(true);
+                  setCartOpen(true);
                 }} 
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg border border-dark-border text-light-text rounded-lg font-medium hover:border-accent transition"
               >
                 <ShoppingCart size={18}/> 
-                Ver Carrito {itemCount > 0 && `(${itemCount})`}
+                <span>Ver Carrito</span>
+                {itemCount > 0 && (
+                  <span className="bg-accent text-dark-bg text-xs font-bold px-2 py-0.5 rounded-full">
+                    {itemCount}
+                  </span>
+                )}
               </button>
             </div>
           </div>
         )}
       </header>
-
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 }

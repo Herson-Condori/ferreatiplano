@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useAuthStore } from '../store/useAuthStore';
 
 // Tipos de proyecto disponibles
 const PROJECT_TYPES = [
@@ -230,6 +231,10 @@ export default function Cotizador() {
 
   // Agregar cotización al carrito
   const handleAddToCart = () => {
+    if (!useAuthStore.getState().isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
     // Aquí integrarías con el useCartStore
     // Por ahora, redirigir al catálogo con los items
     alert('✅ Cotización agregada al carrito\n\nRedirigiendo al checkout...');
@@ -484,7 +489,7 @@ export default function Cotizador() {
             </button>
 
             <a
-              href={`https://wa.me/51999888777?text=Hola Construmax, solicito la cotización ${quote.quoteId} por S/ ${quote.totals.total.toFixed(2)}`}
+              href={`https://wa.me/51942318219?text=Hola Construmax, solicito la cotización ${quote.quoteId} por S/ ${quote.totals.total.toFixed(2)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-5 rounded-lg transition"

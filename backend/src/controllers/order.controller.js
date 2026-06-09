@@ -22,7 +22,15 @@ export const createOrder = async (req, res) => {
       yapeReference    // Solo si metodoPago === 'YAPE' (número de operación)
     } = req.body;
 
-    const clienteId = req.user?.id;
+    let clienteId = req.user?.id;
+    let vendedorId = null;
+
+    if (req.user?.rol === 'VENDEDOR' || req.user?.rol === 'ADMIN') {
+      vendedorId = req.user.id;
+      if (req.body.clienteId) {
+        clienteId = req.body.clienteId;
+      }
+    }
     
     // Validación: Cliente debe estar logueado (excepto contra entrega)
     if (!clienteId && metodoPago !== 'CONTRA_ENTREGA') {
@@ -74,7 +82,7 @@ export const createOrder = async (req, res) => {
     const pedido = await prisma.pedido.create({
       data: {
         clienteId: clienteId || null,
-        vendedorId: null,
+        vendedorId: vendedorId,
         estado: 'NUEVO',
         total,
         metodoPago,
@@ -114,7 +122,7 @@ export const createOrder = async (req, res) => {
           source: culqiToken,
           amount_in_cents: Math.round(total * 100),
           currency_code: 'PEN',
-          description: `Pedido #${pedido.id} - Ferreatiplano`
+          description: `Pedido #${pedido.id} - Ferrealtiplano`
         });
 
         if (charge.status === 'paid') {
@@ -210,7 +218,7 @@ export const createOrder = async (req, res) => {
         estado: pagoExitoso ? 'EN_PREPARACION' : 'NUEVO',
         metodoPago,
         nextSteps: metodoPago === 'YAPE' && !yapeReference
-          ? 'Envía tu comprobante de Yape al WhatsApp 999-888-777'
+          ? 'Envía tu comprobante de Yape al WhatsApp 942-318-219'
           : null
       }
     });
@@ -391,9 +399,12 @@ export const getAllOrders = async (req, res) => {
       where.estado = estado;
     }
 
-    // Si es VENDEDOR, solo ver sus pedidos
+    // Si es VENDEDOR, ver sus pedidos o pedidos online (vendedorId: null)
     if (req.user.rol === 'VENDEDOR') {
-      where.vendedorId = req.user.id;
+      where.OR = [
+        { vendedorId: req.user.id },
+        { vendedorId: null }
+      ];
     }
 
     const pageNumber = Math.max(1, parseInt(page));

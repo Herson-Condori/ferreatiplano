@@ -12,7 +12,7 @@ export const getVendorStats = async (req, res) => {
     hoy.setHours(0, 0, 0, 0);
     
     const manana = new Date(hoy);
-    manana.setDate(manaana.getDate() + 1);
+    manana.setDate(manana.getDate() + 1);
 
     // Filtro base: solo pedidos de hoy
     const filtroHoy = {
@@ -22,9 +22,15 @@ export const getVendorStats = async (req, res) => {
       }
     };
 
-    // Si es vendedor, solo sus pedidos; si es admin, todos
+    // Si es vendedor, ver sus pedidos + online; si es admin, todos
     const filtroRol = rol === 'VENDEDOR' 
-      ? { ...filtroHoy, vendedorId: req.user.id }
+      ? { 
+          ...filtroHoy, 
+          OR: [
+            { vendedorId: req.user.id },
+            { vendedorId: null }
+          ]
+        }
       : filtroHoy;
 
     // 1. Ventas de hoy (total monetario)
@@ -76,7 +82,12 @@ export const getPendingOrders = async (req, res) => {
     const { rol } = req.user;
 
     const filtroRol = rol === 'VENDEDOR'
-      ? { vendedorId: req.user.id }
+      ? { 
+          OR: [
+            { vendedorId: req.user.id },
+            { vendedorId: null }
+          ]
+        }
       : {};
 
     const pedidos = await prisma.pedido.findMany({

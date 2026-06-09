@@ -124,7 +124,7 @@ export const getStoreInfo = (req, res) => {
       name: 'Construmax',
       address: STORE_LOCATION.address,
       coordinates: STORE_LOCATION,
-      phone: '+51 999 888 777',
+      phone: '+51 942 318 219',
       hours: 'Lun-Sáb: 8:00 - 19:00',
       deliveryInfo: {
         baseCost: process.env.DELIVERY_BASE_COST || 5.00,

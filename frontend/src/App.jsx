@@ -3,11 +3,13 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
+import { useCartStore } from './store/useCartStore';
 
 // 🎨 Layouts Principales
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import CartDrawer from './components/layout/CartDrawer';
+import MobileNav from './components/layout/MobileNav';
 
 // 👑 Layout Admin (con sidebar profesional)
 import AdminLayout from './pages/admin/AdminLayout';
@@ -46,164 +48,169 @@ import SuppliersList from './pages/admin/SuppliersList';
 
 // 📄 Componente placeholder para páginas en desarrollo
 const PlaceholderPage = ({ title }) => (
-  <div className="p-6">
-    <h1 className="font-display text-2xl text-accent mb-4">{title}</h1>
-    <div className="bg-dark-surface border border-dark-border rounded-xl p-8 text-center">
-      <p className="text-light-text/70 mb-4">Módulo en desarrollo</p>
-      <p className="text-light-text/50 text-sm">Próximamente disponible</p>
+  <div className="p-4 sm:p-6">
+    <h1 className="font-display text-xl sm:text-2xl text-accent mb-4">{title}</h1>
+    <div className="bg-dark-surface border border-dark-border rounded-xl p-6 sm:p-8 text-center">
+      <p className="text-light-text/70 mb-4 text-sm sm:text-base">Módulo en desarrollo</p>
+      <p className="text-light-text/50 text-xs sm:text-sm">Próximamente disponible</p>
     </div>
   </div>
+);
+
+// ✅ Wrapper para páginas públicas con MobileNav
+const PublicLayout = ({ children }) => (
+  <>
+    <Header />
+    <main className="pb-20 md:pb-0 min-h-screen">
+      {children}
+    </main>
+    <Footer />
+    <MobileNav />
+  </>
+);
+
+// ✅ Wrapper para páginas de cliente con MobileNav
+const ClientLayout = ({ children }) => (
+  <RoleProtectedRoute requiredRoles={['CLIENTE', 'ADMIN', 'VENDEDOR']}>
+    <Header />
+    <main className="pb-20 md:pb-0 min-h-screen">
+      {children}
+    </main>
+    <Footer />
+    <MobileNav />
+  </RoleProtectedRoute>
 );
 
 function App() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { isCartOpen, setCartOpen } = useCartStore();
 
   useEffect(() => {
     // Verificar sesión al montar (Zustand persist ya restaura user/token)
   }, []);
 
-  const openCart = () => setIsCartOpen(true);
-  const closeCart = () => setIsCartOpen(false);
+  const openCart = () => setCartOpen(true);
+  const closeCart = () => setCartOpen(false);
   
   const goToCheckout = () => {
-    closeCart();
+    setCartOpen(false);
     navigate('/checkout');
   };
 
   return (
-    <Routes>
-      {/* 🌐 RUTAS PÚBLICAS (con Header/Footer) */}
-      <Route path="/" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <Home />
-          <Footer />
-        </>
-      } />
-      
-      <Route path="/login" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <LoginForm />
-          <Footer />
-        </>
-      } />
-      
-      <Route path="/registro" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <RegisterForm />
-          <Footer />
-        </>
-      } />
-      
-      <Route path="/catalogo" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <Catalogo />
-          <Footer />
-        </>
-      } />
-      
-      <Route path="/checkout" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <Checkout />
-          <Footer />
-        </>
-      } />
-      
-      <Route path="/checkout/rapido/:id" element={
-        <>
-         <Header onOpenCart={openCart} />
-         <QuickCheckout />
-         <Footer />
-        </>
-      } />
+    <>
+      <Routes>
+        {/* 🌐 RUTAS PÚBLICAS (con Header/Footer/MobileNav) */}
+        <Route path="/" element={
+          <PublicLayout>
+            <Home />
+          </PublicLayout>
+        } />
+        
+        <Route path="/login" element={
+          <PublicLayout>
+            <LoginForm />
+          </PublicLayout>
+        } />
+        
+        <Route path="/registro" element={
+          <PublicLayout>
+            <RegisterForm />
+          </PublicLayout>
+        } />
+        
+        <Route path="/catalogo" element={
+          <PublicLayout>
+            <Catalogo />
+          </PublicLayout>
+        } />
+        
+        <Route path="/checkout" element={
+          <PublicLayout>
+            <Checkout />
+          </PublicLayout>
+        } />
+        
+        <Route path="/checkout/rapido/:id" element={
+          <PublicLayout>
+            <QuickCheckout />
+          </PublicLayout>
+        } />
 
-      <Route path="/checkout/confirmacion/:id" element={
-       <>
-        <Header onOpenCart={openCart} />
-        <CheckoutConfirmation />
-        <Footer />
-       </>
-      } />
+        <Route path="/checkout/confirmacion/:id" element={
+          <PublicLayout>
+            <CheckoutConfirmation />
+          </PublicLayout>
+        } />
 
-      <Route path="/cotizador" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <Cotizador />
-          <Footer />
-        </>
-      } />
-      
-      <Route path="/contacto" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <Contacto />
-          <Footer />
-        </>
-      } />
-      
-      <Route path="/producto/:id" element={
-        <>
-          <Header onOpenCart={openCart} />
-          <ProductDetail />
-          <Footer />
-        </>
-      } />
+        <Route path="/cotizador" element={
+          <PublicLayout>
+            <Cotizador />
+          </PublicLayout>
+        } />
+        
+        <Route path="/contacto" element={
+          <PublicLayout>
+            <Contacto />
+          </PublicLayout>
+        } />
+        
+        <Route path="/producto/:id" element={
+          <PublicLayout>
+            <ProductDetail />
+          </PublicLayout>
+        } />
 
-      {/* 👤 RUTAS CLIENTE (con Header/Footer) */}
-      <Route path="/perfil" element={
-        <RoleProtectedRoute requiredRoles={['CLIENTE', 'ADMIN', 'VENDEDOR']}>
-          <>
-            <Header onOpenCart={openCart} />
+        {/* 👤 RUTAS CLIENTE (con Header/Footer/MobileNav) */}
+        <Route path="/perfil" element={
+          <ClientLayout>
             <Perfil />
-            <Footer />
-          </>
-        </RoleProtectedRoute>
-      } />
+          </ClientLayout>
+        } />
 
-      {/* 👨‍💼 RUTAS VENDEDOR (con Header/Footer) */}
-      <Route path="/vendedor/*" element={
-        <RoleProtectedRoute requiredRoles={['VENDEDOR', 'ADMIN']}>
-          <>
+        {/* 👨‍💼 RUTAS VENDEDOR (SIN MobileNav - tiene su propio layout) */}
+        <Route path="/vendedor/*" element={
+          <RoleProtectedRoute requiredRoles={['VENDEDOR', 'ADMIN']}>
             <Header onOpenCart={openCart} />
-            <Routes>
-              <Route path="/" element={<DashboardVendedor />} />
-              <Route path="pedidos" element={<PlaceholderPage title="Gestión de Pedidos" />} />
-              <Route path="pos" element={<PlaceholderPage title="POS Básico" />} />
-            </Routes>
+            <main className="min-h-screen">
+              <Routes>
+                <Route path="/" element={<DashboardVendedor />} />
+                <Route path="pedidos" element={<PlaceholderPage title="Gestión de Pedidos" />} />
+                <Route path="pos" element={<PlaceholderPage title="POS Básico" />} />
+              </Routes>
+            </main>
             <Footer />
-          </>
-        </RoleProtectedRoute>
-      } />
+          </RoleProtectedRoute>
+        } />
 
-      {/* 👑 RUTAS ADMIN (CON AdminLayout - SIN Header/Footer) */}
-      <Route path="/admin" element={
-        <RoleProtectedRoute requiredRoles={['ADMIN']}>
-          <AdminLayout />
-        </RoleProtectedRoute>
-      }>
-        <Route index element={<DashboardAdmin />} />
-        <Route path="productos" element={<ProductList />} />
-        <Route path="productos/nuevo" element={<ProductForm />} />
-        <Route path="productos/editar/:id" element={<ProductForm />} />
-        <Route path="facturas" element={<InvoiceList />} />
-        <Route path="pedidos" element={<OrdersList />} />
-        <Route path="inventario" element={<InventoryList />} />
-        <Route path="clientes" element={<CustomersList />} />
-        <Route path="vendedores" element={<VendorsList />} />
-        <Route path="reportes" element={<ReportsPage />} />
-        <Route path="configuracion" element={<SettingsPage />} />
-        <Route path="proveedores" element={<SuppliersList />} />
-      </Route>
+        {/* 👑 RUTAS ADMIN (CON AdminLayout - SIN Header/Footer/MobileNav) */}
+        <Route path="/admin" element={
+          <RoleProtectedRoute requiredRoles={['ADMIN']}>
+            <AdminLayout />
+          </RoleProtectedRoute>
+        }>
+          <Route index element={<DashboardAdmin />} />
+          <Route path="productos" element={<ProductList />} />
+          <Route path="productos/nuevo" element={<ProductForm />} />
+          <Route path="productos/editar/:id" element={<ProductForm />} />
+          <Route path="facturas" element={<InvoiceList />} />
+          <Route path="pedidos" element={<OrdersList />} />
+          <Route path="inventario" element={<InventoryList />} />
+          <Route path="clientes" element={<CustomersList />} />
+          <Route path="vendedores" element={<VendorsList />} />
+          <Route path="reportes" element={<ReportsPage />} />
+          <Route path="configuracion" element={<SettingsPage />} />
+          <Route path="proveedores" element={<SuppliersList />} />
+        </Route>
 
-      {/* ❌ 404 Catch-All */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* ❌ 404 Catch-All */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      {/* ✅ CartDrawer global (siempre disponible) */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setCartOpen(false)} />
+    </>
   );
 }
 

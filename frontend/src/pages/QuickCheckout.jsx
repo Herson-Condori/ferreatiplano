@@ -111,7 +111,7 @@ export default function QuickCheckout() {
           </div>
           {metodoPago === 'YAPE' && (
             <p className="text-yellow-400 text-sm mb-4 bg-yellow-500/10 p-3 rounded">
-              📸 Envía tu comprobante al WhatsApp 999888777
+              📸 Envía tu comprobante al WhatsApp 942318219
             </p>
           )}
           <p className="text-light-text/50 text-sm">Redirigiendo...</p>
@@ -214,16 +214,19 @@ export default function QuickCheckout() {
             {metodoPago === 'YAPE' && (
               <div className="ml-4 sm:ml-14 mt-2 p-4 bg-dark-bg rounded-lg border border-purple-500/30">
                 <div className="flex items-center gap-4 mb-3">
-                  <div className="w-24 h-24 bg-white rounded-lg flex items-center justify-center flex-shrink-0 p-2">
+                  <div className="w-24 h-24 bg-white rounded-lg flex items-center justify-center flex-shrink-0 p-2 border border-purple-100">
                     <img 
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=yape.pe/999888777" 
+                      src="/images/yape-qr.jpeg" 
                       alt="QR Yape" 
                       className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=yape.pe/942318219";
+                      }}
                     />
                   </div>
                   <div>
                     <p className="text-sm text-light-text font-medium">Escanea para pagar</p>
-                    <p className="text-xs text-light-text/60 mt-1">Número: <span className="font-bold text-purple-400">999 888 777</span></p>
+                    <p className="text-xs text-light-text/60 mt-1">Número: <span className="font-bold text-purple-400">942 318 219</span></p>
                     <p className="text-xs text-yellow-400 mt-2">Total: <span className="font-bold">S/ {total.toFixed(2)}</span></p>
                   </div>
                 </div>

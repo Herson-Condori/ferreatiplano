@@ -91,21 +91,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* CTA adicional */}
-        <div className="mt-12 p-6 bg-gradient-to-r from-accent/10 to-accent/5 border border-accent/20 rounded-xl max-w-3xl mx-auto backdrop-blur-sm">
-          <p className="text-light-text font-medium mb-2">
-            ¿Necesitas ayuda con tu cotización?
-          </p>
-          <a 
-            href="https://wa.me/51999888777" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-accent hover:text-accent-light font-bold transition"
-          >
-            <MessageCircle size={20} />
-            Escríbenos por WhatsApp
-          </a>
-        </div>
+
       </div>
 
       {/* Scroll indicator */}

@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Columna 1: Info de la empresa */}
           <div>
             <h3 className="font-display text-2xl font-bold text-accent mb-4">
-              FERREA<span className="text-light-text">TIPLANO</span>
+              FERREA<span className="text-light-text">LTIPLANO</span>
             </h3>
             <p className="text-light-text/70 text-sm mb-4">
               Tu ferretería de confianza en Juliaca. Materiales de construcción de alta calidad al mejor precio.
@@ -23,7 +23,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3 text-light-text/70">
                 <Phone size={18} className="text-accent flex-shrink-0" />
-                <span className="text-sm">+51 999 888 777</span>
+                <span className="text-sm">+51 942 318 219</span>
               </div>
               <div className="flex items-center gap-3 text-light-text/70">
                 <Clock size={18} className="text-accent flex-shrink-0" />
@@ -64,7 +64,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3 mb-6">
               <a 
-                href="https://facebook.com/ferreatiplano" 
+                href="https://facebook.com/ferrealtiplano" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-dark-bg border border-dark-border rounded-lg flex items-center justify-center text-light-text/70 hover:text-accent hover:border-accent transition"
@@ -73,7 +73,7 @@ export default function Footer() {
                 <Facebook size={20} />
               </a>
               <a 
-                href="https://instagram.com/ferreatiplano" 
+                href="https://instagram.com/ferrealtiplano" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-dark-bg border border-dark-border rounded-lg flex items-center justify-center text-light-text/70 hover:text-accent hover:border-accent transition"
@@ -82,7 +82,7 @@ export default function Footer() {
                 <Instagram size={20} />
               </a>
               <a 
-                href="https://youtube.com/@ferreatiplano" 
+                href="https://youtube.com/@ferrealtiplano" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-dark-bg border border-dark-border rounded-lg flex items-center justify-center text-light-text/70 hover:text-accent hover:border-accent transition"
@@ -91,7 +91,7 @@ export default function Footer() {
                 <Youtube size={20} />
               </a>
               <a 
-                href="https://wa.me/51999888777" 
+                href="https://wa.me/51942318219" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-green-600/20 border border-green-600/50 rounded-lg flex items-center justify-center text-green-500 hover:bg-green-600/30 hover:border-green-500 transition"
@@ -112,7 +112,7 @@ export default function Footer() {
         <div className="border-t border-dark-border pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-light-text/50 text-sm text-center md:text-left">
-              © {currentYear} Ferreatiplano Juliaca. Todos los derechos reservados.
+              © {currentYear} Ferrealtiplano Juliaca. Todos los derechos reservados.
             </p>
             <div className="flex gap-6 text-sm text-light-text/50">
               <a href="#" className="hover:text-accent transition">Política de Privacidad</a>

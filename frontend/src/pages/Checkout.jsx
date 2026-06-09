@@ -419,17 +419,20 @@ export default function Checkout() {
               {metodoPago === 'YAPE' && (
                 <div className="ml-4 sm:ml-14 mt-2 p-4 bg-dark-bg rounded-lg border border-purple-500/30 animate-fadeIn">
                   <div className="flex flex-col sm:flex-row items-center gap-4 mb-3">
-                    <div className="w-28 h-28 bg-white rounded-lg flex items-center justify-center flex-shrink-0 p-2">
+                    <div className="w-28 h-28 bg-white rounded-lg flex items-center justify-center flex-shrink-0 p-2 border border-purple-100">
                       {/* Reemplaza esta URL con tu QR real de Yape */}
                       <img 
-                        src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=yape.pe/999888777" 
+                        src="/images/yape-qr.jpeg" 
                         alt="QR Yape" 
                         className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.src = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=yape.pe/942318219";
+                        }}
                       />
                     </div>
                     <div className="text-center sm:text-left">
                       <p className="text-sm text-light-text font-medium">Escanea para pagar</p>
-                      <p className="text-xs text-light-text/60 mt-1">Número: <span className="font-bold text-purple-400">999 888 777</span></p>
+                      <p className="text-xs text-light-text/60 mt-1">Número: <span className="font-bold text-purple-400">942 318 219</span></p>
                       <p className="text-xs text-light-text/60 mt-1">A nombre de: <span className="font-bold">FERREALTIPLANO</span></p>
                       <p className="text-xs text-yellow-400 mt-2">💡 Total a transferir: <span className="font-bold">S/ {totalWithDelivery.toFixed(2)}</span></p>
                     </div>

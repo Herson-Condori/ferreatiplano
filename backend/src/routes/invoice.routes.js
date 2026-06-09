@@ -31,7 +31,7 @@ router.get('/:pedidoId/download', verifyToken, async (req, res) => {
       select: { clienteId: true }
     });
 
-    if (pedido.clienteId !== req.user.id && req.user.rol !== 'ADMIN') {
+    if (pedido.clienteId !== req.user.id && req.user.rol !== 'ADMIN' && req.user.rol !== 'VENDEDOR') {
       return res.status(403).json({ error: 'No autorizado' });
     }
 

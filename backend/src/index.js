@@ -70,7 +70,7 @@ verifyCloudinaryConnection();
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    service: 'Ferreatiplano API',
+    service: 'Ferrealtiplano API',
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV 
   });
@@ -191,7 +191,7 @@ app.use((req, res) => {
 // ─────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
-  console.log(`🚀 Ferreatiplano API corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 Ferrealtiplano API corriendo en http://localhost:${PORT}`);
   console.log(`📦 Environment: ${process.env.NODE_ENV}`);
   console.log(`🔗 CORS permitido desde: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
 });

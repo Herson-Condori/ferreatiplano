@@ -105,7 +105,7 @@ export default function ReportsPage() {
             <div className="p-3 bg-green-500/10 rounded-lg"><DollarSign className="text-green-400" /></div>
             <span className="text-green-400 text-sm font-medium">Total Ventas</span>
           </div>
-          <p className="text-3xl font-display font-bold text-light-text">S/ {resumen.totalVentas?.toFixed(2) || '0.00'}</p>
+          <p className="text-3xl font-display font-bold text-light-text">S/ {Number(resumen.totalVentas || 0).toFixed(2)}</p>
         </div>
 
         <div className="bg-dark-surface border border-dark-border p-6 rounded-xl">
@@ -121,7 +121,7 @@ export default function ReportsPage() {
             <div className="p-3 bg-accent/10 rounded-lg"><TrendingUp className="text-accent" /></div>
             <span className="text-accent text-sm font-medium">Ticket Promedio</span>
           </div>
-          <p className="text-3xl font-display font-bold text-light-text">S/ {resumen.ticketPromedio?.toFixed(2) || '0.00'}</p>
+          <p className="text-3xl font-display font-bold text-light-text">S/ {Number(resumen.ticketPromedio || 0).toFixed(2)}</p>
         </div>
       </div>
 
@@ -190,7 +190,7 @@ export default function ReportsPage() {
                   <td className="p-3 font-mono text-accent">#{pedido.id.slice(-6)}</td>
                   <td className="p-3 text-light-text">{pedido.cliente?.nombre || 'Invitado'}</td>
                   <td className="p-3 text-light-text/60">{new Date(pedido.createdAt).toLocaleDateString('es-PE')}</td>
-                  <td className="p-3 font-bold text-light-text">S/ {pedido.total.toFixed(2)}</td>
+                  <td className="p-3 font-bold text-light-text">S/ {Number(pedido.total || 0).toFixed(2)}</td>
                   <td className="p-3">
                     <span className={`px-2 py-1 rounded text-xs ${
                       pedido.estado === 'ENTREGADO' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'

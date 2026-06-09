@@ -19,7 +19,7 @@ router.post('/product',
       const dataURI = `data:${req.file.mimetype};base64,${b64}`;
 
       const result = await cloudinary.uploader.upload(dataURI, {
-        folder: 'ferreatiplano/productos',
+        folder: 'ferrealtiplano/productos',
         transformation: [
           { width: 800, height: 800, crop: 'limit' },
           { quality: 'auto' }

@@ -2,6 +2,8 @@ import { create } from 'zustand';
 
 const useCartStore = create((set, get) => ({
   items: [],
+  isCartOpen: false,
+  setCartOpen: (open) => set({ isCartOpen: open }),
   
   getItems: () => get().items,
   
