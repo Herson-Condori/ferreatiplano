@@ -5,7 +5,7 @@ import axios from 'axios';
 import { 
   ShoppingCart, TrendingUp, Package, Users, Clock, 
   Search, Plus, Minus, Trash2, CheckCircle, Eye,
-  FileText, DollarSign, Calendar, AlertTriangle, RefreshCw, X
+  FileText, DollarSign, Calendar, AlertTriangle, RefreshCw, X, Printer
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
@@ -877,7 +877,7 @@ export default function DashboardVendedor() {
                         className="p-2 bg-dark-bg border border-dark-border rounded-lg text-light-text/70 hover:text-accent transition"
                         title="Imprimir Ticket"
                       >
-                        <FileText size={16} />
+                        <Printer size={16} />
                       </button>
                       <button className="p-2 bg-dark-bg border border-dark-border rounded-lg text-light-text/70 hover:text-accent transition">
                         <Eye size={16} />
@@ -993,7 +993,7 @@ export default function DashboardVendedor() {
                                 className="p-1.5 bg-dark-bg border border-dark-border rounded text-light-text/70 hover:text-accent transition"
                                 title="Imprimir Ticket"
                               >
-                                <FileText size={14} />
+                                <Printer size={14} />
                               </button>
                             </td>
                           </tr>
