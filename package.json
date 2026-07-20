@@ -8,11 +8,11 @@
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
     "build": "cd backend && npm install && npx prisma generate",
-    "start": "cd backend && npx prisma db push && npm start",
+    "start": "cd backend && npx prisma db push && node prisma/seed.js && npm start",
     "build:frontend": "cd frontend && npm run build",
     "start:backend": "cd backend && npm start",
     "db:migrate": "cd backend && npx prisma migrate dev",
-    "db:seed": "cd backend && npm run prisma:seed"
+    "db:seed": "cd backend && node prisma/seed.js"
   },
   "keywords": ["ferreteria", "ventas", "inventario", "ecommerce"],
   "author": "Equipo Ferrealtiplano",
