@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../lib/api';
 import { Edit, Trash2, Plus, Search } from 'lucide-react';
 
 export default function ProductList() {
@@ -12,14 +12,11 @@ export default function ProductList() {
 
   const fetchProducts = async () => {
     try {
-      const token = localStorage.getItem('token');
       const params = new URLSearchParams();
       if (busqueda) params.append('busqueda', busqueda);
       if (categoria) params.append('categoria', categoria);
 
-      const { data } = await axios.get(`http://localhost:4000/api/products?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/products?${params}`);
       setProducts(data.data);
     } catch (err) {
       console.error('Error cargando productos:', err);
@@ -36,10 +33,7 @@ export default function ProductList() {
     if (!confirm('¿Estás seguro de eliminar este producto?')) return;
     
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:4000/api/products/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/products/${id}`);
       fetchProducts();
     } catch (err) {
       alert('Error eliminando producto');

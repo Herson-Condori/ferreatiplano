@@ -1,0 +1,18 @@
+{
+  "name": "ferrealtiplano",
+  "version": "1.0.0",
+  "description": "Sistema de Ventas e Inventario para Ferreterías",
+  "scripts": {
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "start:backend": "cd backend && npm start",
+    "db:migrate": "cd backend && npx prisma migrate dev",
+    "db:seed": "cd backend && npm run prisma:seed"
+  },
+  "keywords": ["ferreteria", "ventas", "inventario", "ecommerce"],
+  "author": "Equipo Ferrealtiplano",
+  "license": "MIT"
+}

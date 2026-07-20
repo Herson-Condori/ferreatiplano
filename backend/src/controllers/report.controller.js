@@ -1,7 +1,5 @@
 // backend/src/controllers/report.controller.js
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma.js';
 
 // ✅ Obtener reporte de ventas y métricas por rango de fechas
 export const getSalesReport = async (req, res) => {

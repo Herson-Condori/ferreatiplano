@@ -1,7 +1,5 @@
 // backend/src/controllers/customer.controller.js
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma.js';
 
 // ✅ Obtener lista de clientes (con filtros)
 export const getCustomers = async (req, res) => {

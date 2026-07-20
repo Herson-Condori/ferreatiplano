@@ -1,7 +1,7 @@
 // src/pages/Cotizador.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { 
   Calculator, Package, Download, ShoppingCart, 
   ChevronDown, ChevronUp, Info, Loader2, CheckCircle 
@@ -114,7 +114,7 @@ export default function Cotizador() {
     setError('');
 
     try {
-      const { data } = await axios.post('http://localhost:4000/api/quotes/calculate', {
+      const { data } = await api.post('/quotes/calculate', {
         projectType,
         measurements: {
           area: area > 0 ? area : undefined,
@@ -140,8 +140,8 @@ export default function Cotizador() {
 
     try {
       // Opción A: Descargar desde backend
-      const response = await axios.post(
-        'http://localhost:4000/api/quotes/pdf',
+      const response = await api.post(
+        '/quotes/pdf',
         { quoteData: quote },
         { responseType: 'blob' }
       );

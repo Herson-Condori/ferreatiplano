@@ -1,7 +1,7 @@
 // src/pages/admin/ProductForm.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../lib/api';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 
 export default function ProductForm() {
@@ -40,7 +40,7 @@ export default function ProductForm() {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get(`http://localhost:4000/api/products/${id}`);
+      const { data } = await api.get(`/products/${id}`);
       const product = data.data;
       setFormData({
         nombre: product.nombre,
@@ -118,19 +118,16 @@ export default function ProductForm() {
     const uploadedUrls = [];
     
     try {
-      const token = localStorage.getItem('token');
-      
       // Subir cada imagen individualmente
       for (const file of imageFiles) {
         const formDataImg = new FormData();
         formDataImg.append('image', file);
         
-        const { data } = await axios.post(
-          'http://localhost:4000/api/upload/product',
+        const { data } = await api.post(
+          '/upload/product',
           formDataImg,
           {
             headers: {
-              'Authorization': `Bearer ${token}`,
               'Content-Type': 'multipart/form-data'
             }
           }
@@ -157,7 +154,6 @@ export default function ProductForm() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
       
       // ✅ Paso 1: Subir nuevas imágenes a Cloudinary (si hay)
       let cloudinaryUrls = [];
@@ -204,19 +200,11 @@ export default function ProductForm() {
       console.log('📦 Enviando producto:', productData);
       console.log('🖼️ Imágenes a guardar:', finalImages);
 
-      // ✅ Paso 4: Guardar en backend
-      const config = {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
       if (isEdit) {
-        await axios.put(`http://localhost:4000/api/products/${id}`, productData, config);
+        await api.put(`/products/${id}`, productData);
         alert('✅ Producto actualizado exitosamente');
       } else {
-        await axios.post('http://localhost:4000/api/products', productData, config);
+        await api.post('/products', productData);
         alert('✅ Producto creado exitosamente');
       }
 

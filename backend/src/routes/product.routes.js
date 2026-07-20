@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { verifyToken, checkRole } from '../middleware/auth.middleware.js';
 import { upload } from '../config/multer.js';
 
@@ -16,7 +15,7 @@ import {
 } from '../controllers/product.controller.js';
 
 const router = Router();
-const prisma = new PrismaClient();
+import prisma from '../config/prisma.js';
 
 // ─────────────────────────────────────────────────────────────
 // 🌐 RUTAS PÚBLICAS (ESPECÍFICAS PRIMERO)

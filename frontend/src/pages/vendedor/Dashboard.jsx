@@ -1,7 +1,7 @@
 // src/pages/vendedor/Dashboard.jsx
 import { useState, useEffect, useMemo } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
-import axios from 'axios';
+import api from '../../lib/api';
 import { 
   ShoppingCart, TrendingUp, Package, Users, Clock, 
   Search, Plus, Minus, Trash2, CheckCircle, Eye,
@@ -194,10 +194,7 @@ export default function DashboardVendedor() {
     setLoadingData(true);
     
     try {
-      const headers = { Authorization: `Bearer ${token}` };
-
-      const ordersRes = await axios.get('http://localhost:4000/api/orders', { 
-        headers,
+      const ordersRes = await api.get('/orders', { 
         params: { page: 1, limit: 500 }
       });
       
@@ -257,8 +254,7 @@ export default function DashboardVendedor() {
       setRealStats(stats);
 
       try {
-        const productsRes = await axios.get('http://localhost:4000/api/products', { 
-          headers,
+        const productsRes = await api.get('/products', { 
           params: { limit: 500 }
         });
         const products = (productsRes.data?.data || []).map(p => ({
@@ -307,10 +303,8 @@ export default function DashboardVendedor() {
     if (!confirm('¿Confirmar que este pedido ha sido preparado y enviado?')) return;
 
     try {
-      const headers = { Authorization: `Bearer ${token}` };
-      await axios.patch(`http://localhost:4000/api/orders/${orderId}/status`, 
-        { estado: 'EN_CAMINO' }, 
-        { headers }
+      await api.patch(`/orders/${orderId}/status`, 
+        { estado: 'EN_CAMINO' }
       );
       
       setRealPendingOrders(prev => prev.filter(o => o.id !== orderId));
@@ -400,12 +394,7 @@ export default function DashboardVendedor() {
         ...(paymentMethod === 'yape' && { yapeReference })
       };
 
-      const response = await axios.post('http://localhost:4000/api/orders', orderData, {
-        headers: {
-          Authorization: `Bearer ${tokenAuth}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await api.post('/orders', orderData);
 
       alert(`✅ Venta procesada correctamente\n\nPedido: ${response.data.data.pedidoId}\nTotal: S/ ${cartTotal.toFixed(2)}\nMétodo: ${paymentMethod.toUpperCase()}`);
       

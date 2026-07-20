@@ -1,9 +1,7 @@
 // backend/src/controllers/order.controller.js
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/prisma.js';
 import culqi from '../config/culqi.js';
 import { generateInvoice } from '../services/invoice.service.js';
-
-const prisma = new PrismaClient();
 
 // ─────────────────────────────────────────────────────────────
 // ✅ CREAR PEDIDO (con método de pago + facturación automática)

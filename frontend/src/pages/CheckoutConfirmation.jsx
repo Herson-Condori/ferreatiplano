@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle, Package, Smartphone, Banknote, ArrowLeft, Download, Share2 } from 'lucide-react';
+import api from '../lib/api';
 
 export default function CheckoutConfirmation() {
   const { id } = useParams();
@@ -16,11 +17,8 @@ export default function CheckoutConfirmation() {
     // Fetch order details
     const fetchOrder = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const { data } = await fetch(`http://localhost:4000/api/orders/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setOrder(data.data);
+        const response = await api.get(`/orders/${id}`);
+        setOrder(response.data.data);
       } catch (error) {
         console.error('Error fetching order:', error);
       } finally {

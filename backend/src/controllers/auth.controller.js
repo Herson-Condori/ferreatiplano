@@ -1,9 +1,8 @@
 // backend/src/controllers/auth.controller.js
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma.js';
+import env from '../config/env.js';
 
 /**
  * 🔓 REGISTRO PÚBLICO (solo para CLIENTES)
@@ -159,8 +158,8 @@ export const login = async (req, res) => {
     // Generar token JWT
     const token = jwt.sign(
       { id: user.id, email: user.email, rol: user.rol },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      env.JWT_SECRET,
+      { expiresIn: env.JWT_EXPIRES_IN }
     );
 
     // Respuesta sin password

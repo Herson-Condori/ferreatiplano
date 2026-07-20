@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { MapPin, Loader2 } from 'lucide-react';
 
 export default function AddressAutocomplete({ 
@@ -21,8 +21,8 @@ export default function AddressAutocomplete({
 
       setLoading(true);
       try {
-        const { data } = await axios.post(
-          'http://localhost:4000/api/delivery/autocomplete',
+        const { data } = await api.post(
+          '/delivery/autocomplete',
           { input }
         );
 

@@ -1,6 +1,6 @@
 // src/pages/admin/VendorsList.jsx
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { 
   Users, Mail, Phone, Search, Plus, Edit, ToggleRight, ToggleLeft,
   RefreshCw, X, EyeOff
@@ -23,11 +23,8 @@ export default function VendorsList() {
   const fetchVendors = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const params = new URLSearchParams(filters);
-      const { data } = await axios.get(`http://localhost:4000/api/vendors?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/vendors?${params}`);
       setVendors(data.data);
     } catch (err) {
       console.error('Error cargando vendedores:', err);
@@ -44,10 +41,7 @@ export default function VendorsList() {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('http://localhost:4000/api/vendors', createForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.post('/vendors', createForm);
       setShowCreateModal(false);
       setCreateForm({ nombre: '', email: '', password: '', telefono: '' });
       fetchVendors();
@@ -67,10 +61,7 @@ export default function VendorsList() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:4000/api/vendors/${selectedVendor.id}`, editForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.put(`/vendors/${selectedVendor.id}`, editForm);
       setShowEditModal(false);
       fetchVendors();
     } catch (err) {
@@ -81,10 +72,8 @@ export default function VendorsList() {
   // Toggle Status
   const handleToggle = async (id, currentStatus) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:4000/api/vendors/${id}/status`, 
-        { activo: !currentStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await api.patch(`/vendors/${id}/status`, 
+        { activo: !currentStatus }
       );
       fetchVendors();
     } catch (err) {

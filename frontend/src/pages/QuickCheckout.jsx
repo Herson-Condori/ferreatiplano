@@ -1,7 +1,7 @@
 // src/pages/QuickCheckout.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { useAuthStore } from '../store/useAuthStore';
 import { 
   Banknote, Smartphone, CheckCircle, ArrowLeft, 
@@ -26,7 +26,7 @@ export default function QuickCheckout() {
     // Cargar producto
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:4000/api/products/${id}`);
+        const { data } = await api.get(`/products/${id}`);
         setProduct(data.data);
       } catch (err) {
         setError('Producto no encontrado');
@@ -67,12 +67,7 @@ export default function QuickCheckout() {
         ...(metodoPago === 'YAPE' && { yapeReference })
       };
 
-      await axios.post('http://localhost:4000/api/orders', orderData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      await api.post('/orders', orderData);
 
       setSuccess(true);
       

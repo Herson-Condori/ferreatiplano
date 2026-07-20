@@ -1,0 +1,32 @@
+{
+  "store": {
+    "nombre": "FERREALTIPLANO",
+    "ruc": "20601234567",
+    "direccion": "Av. Ilave 1234, Juliaca - Puno",
+    "telefono": "+51 942 318 219",
+    "email": "ventas@ferrealtiplano.pe",
+    "logo": "/logo.png",
+    "favicon": "https://res.cloudinary.com/duqss2shh/image/upload/v1783603397/ferrealtiplano/productos/rofa78cxa0vw0rgcty0o.png"
+  },
+  "delivery": {
+    "costoBase": 5,
+    "costoPorKm": 2,
+    "radioGratisKm": 3,
+    "limiteMaximoKm": 15,
+    "habilitado": true
+  },
+  "payments": {
+    "yape": true,
+    "plin": true,
+    "culqi": false,
+    "contraEntrega": true
+  },
+  "alerts": {
+    "umbralStockBajo": 50,
+    "emailNotificaciones": true,
+    "whatsappNotificaciones": false
+  },
+  "security": {
+    "modoMantenimiento": false
+  }
+}

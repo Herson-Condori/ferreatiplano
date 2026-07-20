@@ -1,7 +1,7 @@
 // src/pages/ProductDetail.jsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { ShoppingCart, ArrowLeft, Package, Truck, Shield, Zap } from 'lucide-react'; // ✅ Agregado Zap
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -19,7 +19,7 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:4000/api/products/${id}`);
+        const { data } = await api.get(`/products/${id}`);
         setProduct(data.data);
         setSelectedImage(0);
       } catch (err) {

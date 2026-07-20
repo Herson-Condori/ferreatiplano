@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import api from '../../lib/api';
 import { Eye, RefreshCw, Filter, Calendar, Search, Truck, CheckCircle, AlertTriangle, Printer } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
@@ -111,14 +113,11 @@ export default function OrdersList() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const params = new URLSearchParams();
       if (filters.estado) params.append('estado', filters.estado);
       if (filters.busqueda) params.append('busqueda', filters.busqueda);
       
-      const { data } = await axios.get(`http://localhost:4000/api/orders?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/orders?${params}`);
       setOrders(data.data);
     } catch (err) {
       console.error('Error cargando pedidos:', err);
@@ -136,10 +135,7 @@ export default function OrdersList() {
     if (!confirm(`¿Cambiar estado a "${newStatus}"?`)) return;
     
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:4000/api/orders/${orderId}/status`, { estado: newStatus }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.patch(`/orders/${orderId}/status`, { estado: newStatus });
       fetchOrders(); // Recargar lista
       if (selectedOrder?.id === orderId) {
         fetchOrderDetail(orderId); // Actualizar detalle si está abierto
@@ -153,10 +149,7 @@ export default function OrdersList() {
   const fetchOrderDetail = async (orderId) => {
     setDetailLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.get(`http://localhost:4000/api/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/orders/${orderId}`);
       setSelectedOrder(data.data);
     } catch (err) {
       alert('Error cargando detalle');

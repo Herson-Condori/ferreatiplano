@@ -1,7 +1,5 @@
 // backend/src/controllers/inventory.controller.js
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma.js';
 
 // ✅ Obtener todos los productos con stock
 export const getInventory = async (req, res) => {

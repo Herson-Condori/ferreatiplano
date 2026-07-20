@@ -18,12 +18,12 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     clearError();
-    
+
     const result = await login(email, password);
-    
+
     if (result.success) {
       const user = useAuthStore.getState().user;
-      
+
       // Redirección según rol
       if (user?.rol === 'ADMIN') {
         navigate('/admin', { replace: true });
@@ -38,14 +38,14 @@ export default function LoginForm() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8 bg-dark-surface border border-dark-border rounded-xl p-8 shadow-2xl">
-        
+
         {/* Logo y título */}
         <div className="text-center">
           <div className="flex justify-center mb-4">
             <Building2 className="h-12 w-12 text-accent" />
           </div>
           <h2 className="font-display text-3xl font-bold text-light-text">
-            FERREA<span className="text-accent">TIPLANO</span>
+            FERREA<span className="text-accent">LTIPLANO</span>
           </h2>
           <p className="mt-2 text-light-text/70">
             Inicia sesión para continuar

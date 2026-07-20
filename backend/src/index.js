@@ -4,7 +4,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
+
+// ✅ Nuevo módulo de configuración centralizada
+import env from './config/env.js';
 
 // Middlewares de auth
 import { verifyToken, checkRole } from './middleware/auth.middleware.js';
@@ -23,15 +25,15 @@ import vendorRoutes from './routes/vendor.routes.js';
 import reportRoutes from './routes/report.routes.js';
 import supplierRoutes from './routes/supplier.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import configRoutes from './routes/config.routes.js';
 import { verifyCloudinaryConnection } from './config/cloudinary.js';
 
 // ─────────────────────────────────────────────────────────────
 // ⚙️ CONFIGURACIÓN
 // ─────────────────────────────────────────────────────────────
-dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = env.PORT;
 
 // ─────────────────────────────────────────────────────────────
 // 🔐 MIDDLEWARES GLOBALES
@@ -48,7 +50,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
-    process.env.CORS_ORIGIN
+    env.CORS_ORIGIN
   ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -72,7 +74,7 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     service: 'Ferrealtiplano API',
     timestamp: new Date().toISOString(),
-    env: process.env.NODE_ENV 
+    env: env.NODE_ENV 
   });
 });
 
@@ -89,6 +91,9 @@ app.use('/api/quotes', quoteRoutes);
 
 // Rutas de delivery (públicas para cálculo)
 app.use('/api/delivery', deliveryRoutes);
+
+// Configuración global (pública GET, admin PUT)
+app.use('/api/config', configRoutes);
 
 // ─────────────────────────────────────────────────────────────
 // 🔐 RUTAS PROTEGIDAS (requieren token JWT)
@@ -168,7 +173,7 @@ app.use((err, req, res, next) => {
   
   // Respuesta genérica
   res.status(err.status || 500).json({
-    error: process.env.NODE_ENV === 'development' 
+    error: env.NODE_ENV === 'development' 
       ? err.message 
       : 'Error interno del servidor'
   });
@@ -191,9 +196,14 @@ app.use((req, res) => {
 // ─────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
-  console.log(`🚀 Ferrealtiplano API corriendo en http://localhost:${PORT}`);
-  console.log(`📦 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🔗 CORS permitido desde: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
+  console.log('\n═══════════════════════════════════════════════════════════');
+  console.log('🚀 Ferrealtiplano API - Servidor Iniciado');
+  console.log('═══════════════════════════════════════════════════════════');
+  console.log(`📍 URL: http://localhost:${PORT}`);
+  console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+  console.log(`📦 Environment: ${env.NODE_ENV}`);
+  console.log(`🔗 CORS permitido desde: ${env.CORS_ORIGIN || 'http://localhost:5173'}`);
+  console.log('═══════════════════════════════════════════════════════════\n');
 });
 
 // Cierre elegante

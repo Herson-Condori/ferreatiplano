@@ -5,12 +5,11 @@ import {
   checkInvoiceStatus, 
   cancelInvoice 
 } from '../services/invoice.service.js';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/prisma.js';
 import path from 'path';
 import fs from 'fs';
 
 const router = Router();
-const prisma = new PrismaClient();
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const INVOICES_DIR = path.join(__dirname, '../../invoices');
 
@@ -78,9 +77,56 @@ router.post('/:pedidoId/cancel', verifyToken, checkRole('ADMIN'), async (req, re
   }
 });
 
-// Reintentar generación de comprobante (solo ADMIN)
+// Obtener todos los comprobantes emitidos (solo ADMIN/VENDEDOR)
+router.get('/', verifyToken, checkRole('ADMIN', 'VENDEDOR'), async (req, res) => {
+  try {
+    const pedidos = await prisma.pedido.findMany({
+      where: {
+        comprobante: { isNot: null }
+      },
+      include: {
+        cliente: {
+          select: { nombre: true, email: true, ruc: true }
+        },
+        comprobante: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json({ success: true, data: pedidos });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obtener todos los pedidos pendientes de facturación (solo ADMIN/VENDEDOR)
+router.get('/pending', verifyToken, checkRole('ADMIN', 'VENDEDOR'), async (req, res) => {
+  try {
+    const pedidos = await prisma.pedido.findMany({
+      where: {
+        comprobante: null,
+        estado: { not: 'CANCELADO' }
+      },
+      include: {
+        cliente: {
+          select: { nombre: true, email: true, ruc: true, telefono: true }
+        },
+        items: {
+          include: { producto: true }
+        },
+        pago: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json({ success: true, data: pedidos });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Generar comprobante (solo ADMIN)
 router.post('/:pedidoId/generate', verifyToken, checkRole('ADMIN'), async (req, res) => {
   try {
+    const { tipo } = req.body;
     const pedido = await prisma.pedido.findUnique({
       where: { id: req.params.pedidoId },
       include: { 
@@ -93,7 +139,7 @@ router.post('/:pedidoId/generate', verifyToken, checkRole('ADMIN'), async (req, 
       return res.status(404).json({ error: 'Pedido no encontrado' });
     }
 
-    const result = await generateInvoice(pedido);
+    const result = await generateInvoice(pedido, tipo);
     
     if (result.success) {
       res.json({ success: true, data: result.comprobante });

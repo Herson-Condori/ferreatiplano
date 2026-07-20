@@ -1,7 +1,7 @@
 // src/pages/Checkout.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { CreditCard, QrCode, Truck, CheckCircle, Loader2, MapPin, X, Banknote, Smartphone } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -57,7 +57,7 @@ export default function Checkout() {
     setError('');
     
     try {
-      const { data } = await axios.post('http://localhost:4000/api/delivery/calculate', { address });
+      const { data } = await api.post('/delivery/calculate', { address });
 
       if (data.success) {
         setDeliveryInfo(data.data);
@@ -143,7 +143,7 @@ export default function Checkout() {
     if (!finalLat || !finalLng) {
       setLoading(true);
       try {
-        const response = await axios.post('http://localhost:4000/api/delivery/calculate', {
+        const response = await api.post('/delivery/calculate', {
           address: formData.direccion
         });
         if (response.data.success) {
@@ -179,12 +179,7 @@ export default function Checkout() {
         ...(metodoPago === 'YAPE' && { yapeReference })
       };
 
-      const response = await axios.post('http://localhost:4000/api/orders', orderData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await api.post('/orders', orderData);
 
       setSuccess(response.data);
       clearCart();

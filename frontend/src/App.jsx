@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 import { useCartStore } from './store/useCartStore';
+import api from './lib/api';
 
 // 🎨 Layouts Principales
 import Header from './components/layout/Header';
@@ -87,7 +88,33 @@ function App() {
   const { isCartOpen, setCartOpen } = useCartStore();
 
   useEffect(() => {
-    // Verificar sesión al montar (Zustand persist ya restaura user/token)
+    // Cargar config global y aplicar favicon
+    const applyFavicon = async () => {
+      try {
+        const response = await api.get('/config');
+        const result = response.data;
+        if (result.success && result.data?.store?.favicon) {
+          const link = document.querySelector("link[rel*='icon']");
+          if (link) {
+            link.href = result.data.store.favicon;
+          }
+        }
+      } catch (err) {
+        console.error('Error al aplicar favicon:', err);
+        // Fallback local
+        const savedConfig = localStorage.getItem('ferrealtiplano_config');
+        if (savedConfig) {
+          try {
+            const parsed = JSON.parse(savedConfig);
+            if (parsed.store?.favicon) {
+              const link = document.querySelector("link[rel*='icon']");
+              if (link) link.href = parsed.store.favicon;
+            }
+          } catch (e) {}
+        }
+      }
+    };
+    applyFavicon();
   }, []);
 
   const openCart = () => setCartOpen(true);

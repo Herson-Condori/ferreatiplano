@@ -1,6 +1,6 @@
 // src/pages/admin/InventoryList.jsx
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { 
   Package, AlertTriangle, TrendingUp, TrendingDown, 
   Search, Filter, Plus, Minus, History, RefreshCw
@@ -29,11 +29,8 @@ export default function InventoryList() {
   const fetchInventory = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const params = new URLSearchParams(filters);
-      const { data } = await axios.get(`http://localhost:4000/api/inventory?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/inventory?${params}`);
       setInventory(data.data);
     } catch (err) {
       console.error('Error cargando inventario:', err);
@@ -45,10 +42,7 @@ export default function InventoryList() {
   // Cargar alertas de stock bajo
   const fetchAlerts = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:4000/api/inventory/alerts', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get('/inventory/alerts');
       setAlerts(data.data);
     } catch (err) {
       console.error('Error cargando alertas:', err);
@@ -72,14 +66,11 @@ export default function InventoryList() {
     e.preventDefault();
     
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('http://localhost:4000/api/inventory/adjust', {
+      await api.post('/inventory/adjust', {
         productId: selectedProduct.id,
         cantidad: parseInt(adjustForm.cantidad),
         motivo: adjustForm.motivo,
         tipo: adjustForm.tipo
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       
       setShowAdjustModal(false);
@@ -94,10 +85,7 @@ export default function InventoryList() {
   const viewMovements = async (product) => {
     setSelectedProduct(product);
     try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.get(`http://localhost:4000/api/inventory/movements?productId=${product.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/inventory/movements?productId=${product.id}`);
       setMovements(data.data);
       setShowMovementsModal(true);
     } catch (err) {

@@ -1,8 +1,6 @@
 // backend/src/controllers/vendor.controller.js
 import bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../config/prisma.js';
 
 // ✅ Crear nuevo vendedor (solo ADMIN)
 export const createVendor = async (req, res) => {

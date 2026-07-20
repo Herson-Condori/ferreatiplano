@@ -1,6 +1,6 @@
 // src/pages/admin/ReportsPage.jsx
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { Download, Calendar, DollarSign, ShoppingCart, TrendingUp, Package } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -18,13 +18,12 @@ export default function ReportsPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const params = `fechaInicio=${dates.start}&fechaFin=${dates.end}`;
       
       // Paralelizar llamadas
       const [reportRes, historyRes] = await Promise.all([
-        axios.get(`http://localhost:4000/api/reports/sales?${params}`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`http://localhost:4000/api/reports/history?${params}&limit=5`, { headers: { Authorization: `Bearer ${token}` } })
+        api.get(`/reports/sales?${params}`),
+        api.get(`/reports/history?${params}&limit=5`)
       ]);
 
       setReport(reportRes.data.data);

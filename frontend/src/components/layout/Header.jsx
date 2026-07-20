@@ -11,7 +11,7 @@ export default function Header() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const { setCartOpen } = useCartStore();
-  
+
   const itemCount = useCartStore((state) => state.getItemCount());
   const { user, logout, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ export default function Header() {
   const notificacionesNoLeidas = notificaciones.filter(n => !n.leida).length;
 
   const marcarLeida = (idx) => {
-    setNotificaciones(prev => prev.map((n, i) => 
+    setNotificaciones(prev => prev.map((n, i) =>
       i === idx ? { ...n, leida: true } : n
     ));
   };
@@ -69,8 +69,8 @@ export default function Header() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        !event.target.closest('.user-menu') && 
-        !event.target.closest('.search-box') && 
+        !event.target.closest('.user-menu') &&
+        !event.target.closest('.search-box') &&
         !event.target.closest('.notif-menu')
       ) {
         setUserMenuOpen(false);
@@ -118,14 +118,14 @@ export default function Header() {
       <header className="sticky top-0 z-40 bg-dark-bg/95 backdrop-blur-md border-b border-dark-border">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            
+
             {/* LOGO */}
             <Link to="/" className="flex items-center gap-2 group">
               <div className="w-7 h-7 sm:w-8 sm:h-8 bg-accent rounded-lg flex items-center justify-center group-hover:scale-105 transition">
                 <span className="text-dark-bg font-bold text-xs sm:text-sm">F</span>
               </div>
               <span className="font-display text-lg sm:text-xl font-bold text-light-text tracking-wide group-hover:text-accent transition">
-                FERREA<span className="text-accent">TIPLANO</span>
+                FERRE<span className="text-accent">ALTIPLANO</span>
               </span>
             </Link>
 
@@ -136,9 +136,9 @@ export default function Header() {
                 { label: 'Cotizador', path: '/cotizador' },
                 { label: 'Contacto', path: '/contacto' },
               ].map((item) => (
-                <Link 
+                <Link
                   key={item.path}
-                  to={item.path} 
+                  to={item.path}
                   className="px-4 py-2 text-light-text/80 hover:text-accent font-medium transition rounded-lg hover:bg-accent/10"
                 >
                   {item.label}
@@ -148,16 +148,16 @@ export default function Header() {
 
             {/* ACCIONES DESKTOP */}
             <div className="hidden md:flex items-center gap-2 lg:gap-3">
-              
+
               {/* Buscador Desktop */}
               <div className="relative search-box">
                 <form onSubmit={handleSearch} className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="Buscar materiales..." 
+                  <input
+                    type="text"
+                    placeholder="Buscar materiales..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-dark-surface border border-dark-border rounded-full pl-9 pr-4 py-2 text-sm text-light-text focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent w-40 lg:w-64 transition" 
+                    className="bg-dark-surface border border-dark-border rounded-full pl-9 pr-4 py-2 text-sm text-light-text focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent w-40 lg:w-64 transition"
                   />
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text/50" />
                 </form>
@@ -165,7 +165,7 @@ export default function Header() {
 
               {/* Notificaciones */}
               <div className="relative notif-menu">
-                <button 
+                <button
                   onClick={() => setNotifOpen(!notifOpen)}
                   className="p-2 text-light-text/70 hover:text-accent transition relative rounded-lg hover:bg-dark-surface"
                   aria-label="Notificaciones"
@@ -180,14 +180,14 @@ export default function Header() {
                   <div className="absolute right-0 mt-2 w-80 bg-dark-surface border border-dark-border rounded-xl shadow-2xl z-50 animate-fadeIn overflow-hidden">
                     <div className="p-4 border-b border-dark-border flex justify-between items-center bg-dark-bg/50">
                       <h3 className="font-bold text-light-text text-sm">Notificaciones</h3>
-                      <button 
+                      <button
                         onClick={marcarTodasLeidas}
                         className="text-xs text-accent hover:underline font-medium"
                       >
                         Marcar todas leídas
                       </button>
                     </div>
-                    
+
                     <div className="max-h-80 overflow-y-auto custom-scrollbar">
                       {notificaciones.length === 0 ? (
                         <p className="p-6 text-center text-light-text/50 text-sm">
@@ -195,11 +195,10 @@ export default function Header() {
                         </p>
                       ) : (
                         notificaciones.map((notif, idx) => (
-                          <div 
+                          <div
                             key={notif.id}
-                            className={`p-4 border-b border-dark-border hover:bg-dark-bg/50 transition cursor-pointer ${
-                              !notif.leida ? 'bg-accent/5' : ''
-                            }`}
+                            className={`p-4 border-b border-dark-border hover:bg-dark-bg/50 transition cursor-pointer ${!notif.leida ? 'bg-accent/5' : ''
+                              }`}
                             onClick={() => marcarLeida(idx)}
                           >
                             <div className="flex items-start gap-3">
@@ -226,7 +225,7 @@ export default function Header() {
               {/* Usuario / Login */}
               {isAuthenticated() && user ? (
                 <div className="relative user-menu">
-                  <button 
+                  <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 p-1 pr-3 bg-dark-surface border border-dark-border rounded-full hover:border-accent transition"
                     aria-label="Menú de usuario"
@@ -240,16 +239,16 @@ export default function Header() {
 
                   {userMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-dark-surface border border-dark-border rounded-xl shadow-xl py-1 z-50 animate-fadeIn">
-                      <Link 
-                        to="/perfil" 
+                      <Link
+                        to="/perfil"
                         className="block px-4 py-2 text-sm text-light-text hover:bg-dark-bg hover:text-accent transition"
                         onClick={() => setUserMenuOpen(false)}
                       >
                         👤 Mi Perfil
                       </Link>
                       {user.rol === 'ADMIN' && (
-                        <Link 
-                          to="/admin" 
+                        <Link
+                          to="/admin"
                           className="block px-4 py-2 text-sm text-light-text hover:bg-dark-bg hover:text-accent transition"
                           onClick={() => setUserMenuOpen(false)}
                         >
@@ -257,8 +256,8 @@ export default function Header() {
                         </Link>
                       )}
                       {user.rol === 'VENDEDOR' && (
-                        <Link 
-                          to="/vendedor" 
+                        <Link
+                          to="/vendedor"
                           className="block px-4 py-2 text-sm text-light-text hover:bg-dark-bg hover:text-accent transition"
                           onClick={() => setUserMenuOpen(false)}
                         >
@@ -266,7 +265,7 @@ export default function Header() {
                         </Link>
                       )}
                       <hr className="border-dark-border my-1" />
-                      <button 
+                      <button
                         onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition"
                       >
@@ -276,8 +275,8 @@ export default function Header() {
                   )}
                 </div>
               ) : (
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-accent/10 border border-accent/30 text-accent rounded-full hover:bg-accent/20 transition text-sm font-medium"
                 >
                   <User size={18} />
@@ -286,7 +285,7 @@ export default function Header() {
               )}
 
               {/* Carrito */}
-              <button 
+              <button
                 onClick={() => setCartOpen(true)}
                 className="relative p-2 text-light-text hover:text-accent transition rounded-lg hover:bg-dark-surface"
                 aria-label="Abrir carrito"
@@ -303,7 +302,7 @@ export default function Header() {
             {/* BOTONES MÓVIL */}
             <div className="flex md:hidden items-center gap-1 sm:gap-2">
               {/* Carrito Mobile */}
-              <button 
+              <button
                 onClick={() => setCartOpen(true)}
                 className="relative p-2 text-light-text hover:text-accent transition"
                 aria-label="Ver carrito"
@@ -315,10 +314,10 @@ export default function Header() {
                   </span>
                 )}
               </button>
-              
+
               {/* Menú Hamburguesa */}
-              <button 
-                className="p-2 text-light-text hover:text-accent transition" 
+              <button
+                className="p-2 text-light-text hover:text-accent transition"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 aria-label="Toggle menú"
               >
@@ -331,12 +330,12 @@ export default function Header() {
         {/* MENÚ MÓVIL DESPLEGABLE */}
         {mobileOpen && (
           <div className="md:hidden bg-dark-surface border-t border-dark-border px-4 py-4 space-y-4 animate-fadeIn max-h-[calc(100vh-4rem)] overflow-y-auto">
-            
+
             {/* Buscador Mobile */}
             <form onSubmit={handleSearch} className="relative">
-              <input 
-                type="text" 
-                placeholder="Buscar materiales..." 
+              <input
+                type="text"
+                placeholder="Buscar materiales..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-dark-bg border border-dark-border rounded-lg pl-10 pr-4 py-3 text-light-text focus:outline-none focus:border-accent"
@@ -351,9 +350,9 @@ export default function Header() {
                 { label: 'Cotizador', path: '/cotizador', icon: '📋' },
                 { label: 'Contacto', path: '/contacto', icon: '📞' },
               ].map((item) => (
-                <Link 
+                <Link
                   key={item.path}
-                  to={item.path} 
+                  to={item.path}
                   className="flex items-center gap-3 px-4 py-3 text-light-text hover:text-accent hover:bg-dark-bg rounded-lg transition font-medium"
                   onClick={() => setMobileOpen(false)}
                 >
@@ -376,8 +375,8 @@ export default function Header() {
                       <p className="text-light-text/50 text-sm">{user.rol}</p>
                     </div>
                   </div>
-                  
-                  <Link 
+
+                  <Link
                     to="/perfil"
                     className="flex items-center gap-3 px-4 py-3 text-light-text hover:text-accent hover:bg-dark-bg rounded-lg transition font-medium"
                     onClick={() => setMobileOpen(false)}
@@ -385,10 +384,10 @@ export default function Header() {
                     <span className="text-xl">👤</span>
                     <span>Mi Perfil</span>
                   </Link>
-                  
+
                   {user.rol === 'ADMIN' && (
-                    <Link 
-                      to="/admin" 
+                    <Link
+                      to="/admin"
                       className="flex items-center gap-3 px-4 py-3 bg-accent/10 text-accent rounded-lg font-medium hover:bg-accent/20 transition"
                       onClick={() => setMobileOpen(false)}
                     >
@@ -397,8 +396,8 @@ export default function Header() {
                     </Link>
                   )}
                   {user.rol === 'VENDEDOR' && (
-                    <Link 
-                      to="/vendedor" 
+                    <Link
+                      to="/vendedor"
                       className="flex items-center gap-3 px-4 py-3 bg-accent/10 text-accent rounded-lg font-medium hover:bg-accent/20 transition"
                       onClick={() => setMobileOpen(false)}
                     >
@@ -406,8 +405,8 @@ export default function Header() {
                       <span>Panel Vendedor</span>
                     </Link>
                   )}
-                  
-                  <button 
+
+                  <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 px-4 py-3 text-red-400 border border-red-500/30 rounded-lg font-medium hover:bg-red-500/10 transition"
                   >
@@ -416,8 +415,8 @@ export default function Header() {
                   </button>
                 </>
               ) : (
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="flex items-center justify-center gap-2 px-4 py-3 bg-accent text-dark-bg font-bold rounded-lg hover:bg-accent-hover transition"
                   onClick={() => setMobileOpen(false)}
                 >
@@ -425,15 +424,15 @@ export default function Header() {
                   <span>Iniciar Sesión</span>
                 </Link>
               )}
-              
-              <button 
+
+              <button
                 onClick={() => {
                   setMobileOpen(false);
                   setCartOpen(true);
-                }} 
+                }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-dark-bg border border-dark-border text-light-text rounded-lg font-medium hover:border-accent transition"
               >
-                <ShoppingCart size={18}/> 
+                <ShoppingCart size={18} />
                 <span>Ver Carrito</span>
                 {itemCount > 0 && (
                   <span className="bg-accent text-dark-bg text-xs font-bold px-2 py-0.5 rounded-full">

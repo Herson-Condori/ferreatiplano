@@ -1,13 +1,11 @@
 // backend/src/controllers/quote.controller.js
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/prisma.js';
 import PDFDocument from 'pdfkit';
 import { 
   calculateMaterials, 
   calculateCosts, 
   generateQuoteSummary 
 } from '../services/calculator.service.js';
-
-const prisma = new PrismaClient();
 
 /**
  * Calcular cotización de proyecto

@@ -1,6 +1,6 @@
 // src/pages/admin/SuppliersList.jsx
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { Store, Mail, Phone, MapPin, Package, Search, Plus, Edit, ToggleRight, ToggleLeft, RefreshCw, X } from 'lucide-react';
 
 export default function SuppliersList() {
@@ -14,9 +14,8 @@ export default function SuppliersList() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const params = new URLSearchParams(filters);
-      const { data } = await axios.get(`http://localhost:4000/api/suppliers?${params}`, { headers: { Authorization: `Bearer ${token}` } });
+      const { data } = await api.get(`/suppliers?${params}`);
       setSuppliers(data.data);
     } catch (err) {
       console.error(err);
@@ -30,13 +29,12 @@ export default function SuppliersList() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
       const url = editingSupplier 
-        ? `http://localhost:4000/api/suppliers/${editingSupplier.id}`
-        : 'http://localhost:4000/api/suppliers';
+        ? `/suppliers/${editingSupplier.id}`
+        : '/suppliers';
       const method = editingSupplier ? 'put' : 'post';
       
-      await axios[method](url, form, { headers: { Authorization: `Bearer ${token}` } });
+      await api[method](url, form);
       setShowModal(false);
       setEditingSupplier(null);
       setForm({ nombre: '', ruc: '', contacto: '', email: '', telefono: '', direccion: '', productosSuministra: '' });
@@ -54,8 +52,7 @@ export default function SuppliersList() {
 
   const handleToggle = async (id, currentStatus) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:4000/api/suppliers/${id}/status`, { activo: !currentStatus }, { headers: { Authorization: `Bearer ${token}` } });
+      await api.patch(`/suppliers/${id}/status`, { activo: !currentStatus });
       fetchData();
     } catch (err) { alert('Error actualizando estado'); }
   };

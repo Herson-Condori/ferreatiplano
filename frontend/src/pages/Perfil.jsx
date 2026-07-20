@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { useAuthStore } from '../store/useAuthStore';
 import { Download, Package, Clock, CheckCircle } from 'lucide-react';
 
@@ -13,10 +13,7 @@ export default function Perfil() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const { data } = await axios.get('http://localhost:4000/api/orders/my-orders', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const { data } = await api.get('/orders/my-orders');
         setOrders(data.data);
       } catch (err) {
         console.error('Error cargando pedidos:', err);
@@ -43,13 +40,12 @@ export default function Perfil() {
   // Agrega esta función al componente Perfil
 const downloadPDF = async (pedidoId) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:4000/api/invoices/${pedidoId}/download`, {
-      headers: { Authorization: `Bearer ${token}` }
+    const response = await api.get(`/invoices/${pedidoId}/download`, {
+      responseType: 'blob'
     });
 
-    if (response.ok) {
-      const blob = await response.blob();
+    if (response.status === 200) {
+      const blob = response.data;
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

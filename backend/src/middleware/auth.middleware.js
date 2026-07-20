@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import env from '../config/env.js';
 
 /**
  * Verifica que el token JWT sea válido y adjunta el usuario a req.user
@@ -13,7 +14,7 @@ export const verifyToken = (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, env.JWT_SECRET);
     req.user = decoded; // { id, email, rol }
     next();
   } catch (err) {

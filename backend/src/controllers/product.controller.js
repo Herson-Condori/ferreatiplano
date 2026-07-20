@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/prisma.js';
 import cloudinary from '../config/cloudinary.js';
-
-const prisma = new PrismaClient();
 
 // ─────────────────────────────────────────────────────────────
 // 📋 LISTAR PRODUCTOS (con filtros avanzados + paginación + búsqueda)

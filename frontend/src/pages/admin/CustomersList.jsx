@@ -1,6 +1,6 @@
 // src/pages/admin/CustomersList.jsx
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { 
   Users, Mail, Phone, MapPin, FileText, Calendar, 
   Search, Filter, Eye, Edit, ToggleLeft, ToggleRight,
@@ -26,16 +26,13 @@ export default function CustomersList() {
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const params = new URLSearchParams();
       if (filters.busqueda) params.append('busqueda', filters.busqueda);
       if (filters.estado) params.append('estado', filters.estado);
       if (filters.fechaDesde) params.append('fechaDesde', filters.fechaDesde);
       if (filters.fechaHasta) params.append('fechaHasta', filters.fechaHasta);
       
-      const { data } = await axios.get(`http://localhost:4000/api/customers?${params}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/customers?${params}`);
       setCustomers(data.data);
       setPagination(data.pagination);
     } catch (err) {
@@ -53,10 +50,7 @@ export default function CustomersList() {
   const fetchCustomerDetail = async (id) => {
     setDetailLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.get(`http://localhost:4000/api/customers/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { data } = await api.get(`/customers/${id}`);
       setSelectedCustomer(data.data);
     } catch (err) {
       alert('Error cargando detalle del cliente');
@@ -83,10 +77,7 @@ export default function CustomersList() {
   const handleUpdateCustomer = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:4000/api/customers/${selectedCustomer.id}`, editForm, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.put(`/customers/${selectedCustomer.id}`, editForm);
       setShowEditModal(false);
       fetchCustomers();
       if (selectedCustomer.id === selectedCustomer?.id) {
@@ -102,10 +93,8 @@ export default function CustomersList() {
     if (!confirm(`¿${currentStatus ? 'Desactivar' : 'Activar'} esta cuenta?`)) return;
     
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:4000/api/customers/${customerId}/status`, 
-        { activo: !currentStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await api.patch(`/customers/${customerId}/status`, 
+        { activo: !currentStatus }
       );
       fetchCustomers();
     } catch (err) {
@@ -116,9 +105,7 @@ export default function CustomersList() {
   // Exportar a CSV
   const handleExport = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4000/api/customers/export', {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await api.get('/customers/export', {
         responseType: 'blob'
       });
       

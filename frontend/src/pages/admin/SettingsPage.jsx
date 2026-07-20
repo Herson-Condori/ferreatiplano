@@ -1,6 +1,6 @@
 // src/pages/admin/SettingsPage.jsx
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { 
   Store, Truck, CreditCard, Bell, Shield, Save, RotateCcw, 
   Eye, EyeOff, ToggleLeft, ToggleRight, AlertTriangle
@@ -20,7 +20,8 @@ export default function SettingsPage() {
     direccion: 'Av. Ilave 1234, Juliaca - Puno',
     telefono: '+51 942 318 219',
     email: 'ventas@ferrealtiplano.pe',
-    logo: '/logo.png'
+    logo: '/logo.png',
+    favicon: '/favicon.svg'
   });
 
   const [deliveryConfig, setDeliveryConfig] = useState({
@@ -51,34 +52,66 @@ export default function SettingsPage() {
     confirmNewPassword: ''
   });
 
-  // Cargar configuración desde backend (opcional)
+  // Cargar configuración desde backend
   useEffect(() => {
-    // fetchConfig(); // Descomentar cuando el backend esté listo
+    const fetchConfig = async () => {
+      try {
+        const { data } = await api.get('/config');
+        if (data.success && data.data) {
+          const config = data.data;
+          if (config.store) setStoreConfig(config.store);
+          if (config.delivery) setDeliveryConfig(config.delivery);
+          if (config.payments) setPaymentConfig(config.payments);
+          if (config.alerts) setAlertConfig(config.alerts);
+        }
+      } catch (err) {
+        console.error('Error loading config:', err);
+        const savedConfig = localStorage.getItem('ferrealtiplano_config');
+        if (savedConfig) {
+          try {
+            const parsed = JSON.parse(savedConfig);
+            if (parsed.store) setStoreConfig(parsed.store);
+            if (parsed.delivery) setDeliveryConfig(parsed.delivery);
+            if (parsed.payments) setPaymentConfig(parsed.payments);
+            if (parsed.alerts) setAlertConfig(parsed.alerts);
+          } catch (e) {
+            console.error('Error parsing local config', e);
+          }
+        }
+      }
+    };
+    fetchConfig();
   }, []);
 
   const handleSave = async () => {
     setLoading(true);
     setSuccessMsg('');
     try {
-      const token = localStorage.getItem('token');
-      // Aquí enviarías todas las configuraciones al backend
-      await axios.put('http://localhost:4000/api/config', {
+      await api.put('/config', {
         store: storeConfig,
         delivery: deliveryConfig,
         payments: paymentConfig,
         alerts: alertConfig,
         security: { modoMantenimiento: securityConfig.modoMantenimiento }
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
+      
+      // Aplicar favicon inmediatamente
+      if (storeConfig.favicon) {
+        const link = document.querySelector("link[rel*='icon']");
+        if (link) link.href = storeConfig.favicon;
+      }
+
       setSuccessMsg('✅ Configuración guardada correctamente');
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err) {
       console.error('Error guardando config:', err);
-      // Para demo: guardamos en localStorage
       localStorage.setItem('ferrealtiplano_config', JSON.stringify({
         store: storeConfig, delivery: deliveryConfig, payments: paymentConfig, alerts: alertConfig
       }));
+      if (storeConfig.favicon) {
+        const link = document.querySelector("link[rel*='icon']");
+        if (link) link.href = storeConfig.favicon;
+      }
       setSuccessMsg('✅ Guardado localmente (modo demo)');
       setTimeout(() => setSuccessMsg(''), 3000);
     } finally {
@@ -93,12 +126,9 @@ export default function SettingsPage() {
       return;
     }
     try {
-      const token = localStorage.getItem('token');
-      await axios.put('http://localhost:4000/api/auth/change-password', {
+      await api.put('/auth/change-password', {
         oldPassword: securityConfig.oldPassword,
         newPassword: securityConfig.newPassword
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       alert('Contraseña actualizada correctamente');
       setSecurityConfig({...securityConfig, oldPassword: '', newPassword: '', confirmNewPassword: ''});
@@ -189,6 +219,59 @@ export default function SettingsPage() {
                 <div>
                   <label className="block text-light-text/80 text-sm mb-1">Email de Contacto</label>
                   <input type="email" value={storeConfig.email} onChange={e => setStoreConfig({...storeConfig, email: e.target.value})} className="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-light-text focus:outline-none focus:border-accent" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-light-text/80 text-sm mb-1">Favicon del Sitio (Ícono de Navegador)</label>
+                  <div className="flex gap-2 items-center">
+                    <input 
+                      type="text" 
+                      value={storeConfig.favicon || ''} 
+                      onChange={e => {
+                        setStoreConfig({...storeConfig, favicon: e.target.value});
+                        const link = document.querySelector("link[rel*='icon']");
+                        if (link) link.href = e.target.value;
+                      }} 
+                      className="flex-1 bg-dark-bg border border-dark-border rounded-lg px-4 py-2.5 text-light-text focus:outline-none focus:border-accent text-sm"
+                      placeholder="/favicon.svg"
+                    />
+                    <label className="cursor-pointer bg-dark-surface border border-dark-border hover:border-accent text-light-text font-bold px-4 py-2.5 rounded-lg transition text-sm flex-shrink-0">
+                      Subir Ícono
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (!file) return;
+                          
+                          const formData = new FormData();
+                          formData.append('image', file);
+                          
+                          try {
+                            const { data } = await api.post('/upload/product', formData, {
+                              headers: { 
+                                'Content-Type': 'multipart/form-data'
+                              }
+                            });
+                            
+                            if (data.success) {
+                              setStoreConfig(prev => {
+                                const updated = {...prev, favicon: data.imageUrl};
+                                const link = document.querySelector("link[rel*='icon']");
+                                if (link) link.href = data.imageUrl;
+                                return updated;
+                              });
+                              alert('Favicon subido y aplicado temporalmente. Recuerda hacer clic en "Guardar Cambios".');
+                            }
+                          } catch (err) {
+                            console.error('Error subiendo favicon:', err);
+                            alert('Error al subir el archivo.');
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <p className="text-light-text/40 text-xs mt-1">Sube un archivo PNG, SVG o ICO (sugerido: 32x32px o 64x64px).</p>
                 </div>
               </div>
             </div>

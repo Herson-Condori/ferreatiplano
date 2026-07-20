@@ -1,7 +1,7 @@
 // src/pages/Catalogo.jsx
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { useCartStore } from '../store/useCartStore'; // ✅ Hook del carrito
 import { useAuthStore } from '../store/useAuthStore'; // ✅ Hook de autenticación
 import { Search, Filter, SlidersHorizontal, ChevronLeft, ChevronRight, X, ShoppingCart, CheckCircle } from 'lucide-react';
@@ -43,8 +43,8 @@ export default function Catalogo() {
     const loadMetadata = async () => {
       try {
         const [catsRes, priceRes] = await Promise.all([
-          axios.get('http://localhost:4000/api/products/categories'),
-          axios.get('http://localhost:4000/api/products/price-range')
+          api.get('/products/categories'),
+          api.get('/products/price-range')
         ]);
         setCategorias(catsRes.data.data);
         setPriceRange(priceRes.data.data);
@@ -78,7 +78,7 @@ export default function Catalogo() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(`http://localhost:4000/api/products?${searchParams.toString()}`);
+        const { data } = await api.get(`/products?${searchParams.toString()}`);
         
         // ✅ Normalizar precios a número
         const normalizedProducts = data.data.map(product => ({
