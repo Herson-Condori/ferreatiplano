@@ -47,11 +47,15 @@ app.use(morgan('dev'));
 
 // CORS: Permitir conexión desde frontend (desarrollo + producción)
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    env.CORS_ORIGIN
-  ].filter(Boolean),
+  origin: (origin, callback) => {
+    if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('ferrealtiplano') || origin.includes('railway.app')) {
+      return callback(null, true);
+    }
+    if (env.CORS_ORIGIN && (env.CORS_ORIGIN === '*' || env.CORS_ORIGIN.split(',').includes(origin))) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
