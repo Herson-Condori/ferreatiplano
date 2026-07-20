@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { execSync } from 'child_process';
 
 // ✅ Nuevo módulo de configuración centralizada
 import env from './config/env.js';
@@ -196,8 +197,17 @@ app.use((req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────
-// 🚀 INICIAR SERVIDOR
+// 🚀 INICIAR SERVIDOR & SINCRONIZAR DB EN NUBE
 // ─────────────────────────────────────────────────────────────
+
+try {
+  console.log('🔄 Sincronizando esquema de base de datos en la nube...');
+  execSync('npx prisma db push --accept-data-loss', { stdio: 'inherit' });
+  console.log('🌱 Ejecutando sembrado de datos iniciales...');
+  execSync('node prisma/seed.js', { stdio: 'inherit' });
+} catch (dbSyncErr) {
+  console.error('⚠️ Aviso en sincronización inicial de DB:', dbSyncErr.message);
+}
 
 app.listen(PORT, () => {
   console.log('\n═══════════════════════════════════════════════════════════');
